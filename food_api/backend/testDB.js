@@ -1,6 +1,6 @@
 require("dotenv").config();
 const mongoose = require("mongoose");
-const Dish = require("./models/dish");
+const Dish = require("./models/Dish.js");
 
 mongoose.connect(process.env.MONGO_URI)
   .then(async () => {

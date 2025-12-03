@@ -1,3 +1,4 @@
+// gamehandler.js
 const rooms = {};
 
 module.exports = (io, socket) => {
@@ -6,91 +7,94 @@ module.exports = (io, socket) => {
   // CREATE ROOM
   socket.on("createRoom", ({ roomId, name, totalRounds }, callback) => {
     try {
-      console.log("🟢 createRoom:", { roomId, name, totalRounds });
-
-      if (!roomId || !name)
-        return callback({ ok: false, message: "Room ID or name missing!" });
+      if (!roomId || !name) return callback({ ok: false, message: "Missing fields" });
 
       if (rooms[roomId])
-        return callback({ ok: false, message: "Room already exists!" });
+        return callback({ ok: false, message: "Room already exists" });
 
+      // FIRST PLAYER → HOST
       rooms[roomId] = {
-        hostId: socket.id,
-        totalRounds,
-        players: [{ id: socket.id, name, score: 0 }],
+        hostSocketId: socket.id,
+        totalRounds: totalRounds || 5,
+        players: [
+          { socketId: socket.id, name, score: 0 }
+        ],
       };
 
       socket.join(roomId);
       socket.roomId = roomId;
-      socket.playerName = name;
 
-      io.to(roomId).emit("roomUpdate", {
-        players: rooms[roomId].players,
-        hostId: rooms[roomId].hostId,
+      callback({
+        ok: true,
+        isHost: true,
+        players: rooms[roomId].players
       });
 
-      callback({ ok: true, message: "Room created successfully" });
+      io.to(roomId).emit("roomUpdate", rooms[roomId]);
     } catch (err) {
-      console.error("❌ Error in createRoom:", err);
-      callback({ ok: false, message: "Server error creating room" });
+      console.error(err);
+      callback({ ok: false, message: "Server error" });
     }
   });
 
   // JOIN ROOM
   socket.on("joinRoom", ({ roomId, name }, callback) => {
     try {
-      console.log("🟡 joinRoom:", { roomId, name });
-
       if (!roomId || !name)
-        return callback({ ok: false, message: "Room ID or name missing!" });
+        return callback({ ok: false, message: "Missing fields" });
 
       const room = rooms[roomId];
-      if (!room) return callback({ ok: false, message: "Room not found!" });
+      if (!room) return callback({ ok: false, message: "Room not found" });
 
-      room.players.push({ id: socket.id, name, score: 0 });
-      socket.join(roomId);
-      socket.roomId = roomId;
-      socket.playerName = name;
-
-      io.to(roomId).emit("roomUpdate", {
-        players: room.players,
-        hostId: room.hostId,
+      // ADD PLAYER
+      room.players.push({
+        socketId: socket.id,
+        name,
+        score: 0,
       });
 
-      callback({ ok: true, message: "Joined successfully" });
-    } catch (err) {
-      console.error("❌ joinRoom error:", err);
-      callback({ ok: false, message: "Server error joining room" });
-    }
-  });
+      socket.join(roomId);
+      socket.roomId = roomId;
 
-  // START ROUND (optional logic)
-  socket.on("startRound", ({ dishName, ingredients }) => {
-    console.log("🏁 startRound triggered:", dishName, ingredients);
-    const roomId = socket.roomId;
-    if (roomId && rooms[roomId]) {
-      io.to(roomId).emit("roundStarted", { dishName, ingredients });
+      const isHost = socket.id === room.hostSocketId;
+
+      callback({
+        ok: true,
+        isHost,
+        players: room.players,
+        hostSocketId: room.hostSocketId,
+      });
+
+      io.to(roomId).emit("roomUpdate", rooms[roomId]);
+    } catch (err) {
+      console.error(err);
+      callback({ ok: false, message: "Server error" });
     }
   });
 
   // DISCONNECT
   socket.on("disconnect", () => {
-    console.log("❌ Disconnected:", socket.id);
-    const roomId = socket.roomId;
-    if (!roomId || !rooms[roomId]) return;
+    console.log("🔌 Player disconnected:", socket.id);
 
-    rooms[roomId].players = rooms[roomId].players.filter(
-      (p) => p.id !== socket.id
-    );
+    for (const roomId in rooms) {
+      const room = rooms[roomId];
 
-    io.to(roomId).emit("roomUpdate", {
-      players: rooms[roomId].players,
-      hostId: rooms[roomId].hostId,
-    });
+      // REMOVE PLAYER
+      room.players = room.players.filter(p => p.socketId !== socket.id);
 
-    if (rooms[roomId].players.length === 0) {
-      delete rooms[roomId];
-      console.log("🗑️ Room deleted:", roomId);
+      // IF HOST LEFT → NEW HOST
+      if (room.hostSocketId === socket.id && room.players.length > 0) {
+        room.hostSocketId = room.players[0].socketId;
+      }
+
+      // If no players → delete room
+      if (room.players.length === 0) {
+        delete rooms[roomId];
+        continue;
+      }
+
+      // update all players
+      io.to(roomId).emit("roomUpdate", rooms[roomId]);
     }
   });
 };

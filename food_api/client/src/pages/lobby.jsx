@@ -1,38 +1,127 @@
+// src/pages/lobby.jsx
 import React, { useEffect, useState } from "react";
-import { useNavigate, useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { socket } from "../socket";
+import "../styles/theme.css";
+import { getAvatarUrl, createFallbackAvatar } from "../utils/avatar";
 
 export default function Lobby() {
+  const { roomId: urlRoomId } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const { roomId } = useParams();
-  const { name, isHost } = location.state || {};
-  const [room, setRoom] = useState(null);
+  const nav = location.state || {};
+
+  const roomId = urlRoomId || nav.roomId;
+  const name = nav.name || sessionStorage.getItem("playerName") || "Player";
+  const rounds = nav.rounds || 3;
+  const timePerRound = nav.timePerRound || 20;
+  const initialIsHost = nav.isHost || false;
+  const playerId = localStorage.getItem("playerId");
+  const sessionAvatar = sessionStorage.getItem("playerAvatar");
+  const navAvatar = nav.avatar;
+  const selectedAvatar = navAvatar || sessionAvatar || null;
+
+  const [players, setPlayers] = useState([]);
+  const [hostPlayerId, setHostPlayerId] = useState(null);
+  const [localRounds, setLocalRounds] = useState(rounds);
+  const [localTimePerRound, setLocalTimePerRound] = useState(timePerRound);
 
   useEffect(() => {
     if (!socket.connected) socket.connect();
 
-    socket.on("roomUpdated", setRoom);
+    if (initialIsHost) {
+      socket.emit("createRoom", { roomId, name, totalRounds: rounds, playerId, timePerRound, avatar: selectedAvatar }, (res) => {
+        if (!res.ok) console.warn("createRoom failed", res?.message);
+      });
+    } else {
+      socket.emit("joinRoom", { roomId, name, playerId, avatar: selectedAvatar }, (res) => {
+        if (!res.ok) console.warn("joinRoom failed", res?.message);
+      });
+    }
 
-    socket.on("gameStarted", ({ dish, round, totalRounds }) => {
-      navigate(`/game/${roomId}`, { state: { dish, round, totalRounds, name, roomId } });
-    });
+    const onRoomUpdate = ({ players: updated = [], hostPlayerId: hostId, totalRounds: tr, timePerRound: tpr }) => {
+      setPlayers(updated);
+      setHostPlayerId(hostId);
+      if (typeof tr !== 'undefined') setLocalRounds(tr);
+      if (typeof tpr !== 'undefined') setLocalTimePerRound(tpr);
+    };
+
+    const onGameStarted = (payload) => {
+      navigate(`/game/${roomId}`, {
+        state: {
+          name,
+          totalRounds: payload.totalRounds || localRounds,
+          timePerRound: payload.timePerRound ?? localTimePerRound,
+          initialDish: { dish: payload.dish, ingredients: payload.ingredients, round: payload.round },
+          players: payload.players
+        }
+      });
+    };
+
+    socket.on("roomUpdate", onRoomUpdate);
+    socket.on("gameStarted", onGameStarted);
 
     return () => {
-      socket.off("roomUpdated");
-      socket.off("gameStarted");
+      socket.off("roomUpdate", onRoomUpdate);
+      socket.off("gameStarted", onGameStarted);
     };
-  }, [roomId, navigate, name]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [roomId]);
 
-  const handleStart = () => socket.emit("startGame", { roomId });
+  const isHost = hostPlayerId === playerId;
 
-  if (!room) return <p>Loading room...</p>;
+  const startGame = () => {
+    if (!isHost) return;
+    socket.emit("startGame", { roomId, playerId }, (res) => {
+      if (!res?.ok) console.warn("startGame ack fail", res);
+    });
+  };
+
+  const updateSettings = () => {
+    if (!isHost) return;
+    socket.emit("updateRoomSettings", { roomId, playerId, totalRounds: Number(localRounds), timePerRound: Number(localTimePerRound) }, (res) => {
+      if (!res?.ok) console.warn("updateRoomSettings failed", res);
+    });
+  };
 
   return (
-    <div>
-      <h2>Room: {roomId}</h2>
-      <ul>{room.players.map((p) => <li key={p.id}>{p.name}</li>)}</ul>
-      {isHost ? <button onClick={handleStart}>Start Game</button> : <p>Waiting for host...</p>}
+    <div className="page lobby">
+      <div className="card">
+        <h2>🍲 Room: {roomId}</h2>
+
+        <div className="players">
+          <h4>Players ({players.length})</h4>
+          <ul className="player-list">
+                {players.map((p, i) => (
+              <li key={p.playerId || p.socketId || i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <img src={p.avatar || getAvatarUrl(p.playerId || p.name, 36)} onError={(e) => { e.currentTarget.src = createFallbackAvatar(p.name,36); }} alt={p.name} className="avatar" style={{ width:36, height:36 }} />
+                <span>{p.name} {p.playerId === playerId ? " (You)" : ""} {p.playerId === hostPlayerId ? " ⭐ Host" : ""}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="form lobby-settings">
+          <label className="form-row">Rounds:
+            <input className="form-input" type="number" min={1} value={localRounds} onChange={(e) => setLocalRounds(e.target.value)} disabled={!isHost} />
+          </label>
+          <label className="form-row">Time per round (s):
+            <input className="form-input" type="number" min={5} value={localTimePerRound} onChange={(e) => setLocalTimePerRound(e.target.value)} disabled={!isHost} />
+          </label>
+        </div>
+
+        <div className="lobby-actions">
+          {isHost ? (
+            <>
+              <button className="btn" onClick={updateSettings}>Update Settings</button>
+              <button className="btn primary" onClick={startGame} disabled={players.length < 1}>Start Game</button>
+            </>
+          ) : (
+            <div>Waiting for host to start…</div>
+          )}
+          <button className="btn" onClick={() => navigate("/")}>Leave</button>
+        </div>
+      </div>
     </div>
   );
 }

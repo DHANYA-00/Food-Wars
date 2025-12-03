@@ -1,51 +1,17 @@
-.lobby-container {
-  max-width: 400px;
-  margin: 80px auto;
+/* lobby.css */
+.lobby-root {
+  max-width: 800px;
+  margin: 32px auto;
   padding: 20px;
-  text-align: center;
-  background: #fffbe6;
+  background: white;
   border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
 }
 
-.lobby-container h2 {
-  margin-bottom: 10px;
-  color: #333;
-}
+.players-section { margin: 16px 0; }
+.players-section ul { list-style:none; padding:0; }
+.players-section li { padding:8px 0; border-bottom:1px solid #f0f0f0; }
 
-.lobby-container ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.lobby-container li {
-  background: #fef0d3;
-  margin: 6px 0;
-  padding: 8px;
-  border-radius: 6px;
-  font-weight: 500;
-}
-
-.start-btn {
-  background-color: #ff7043;
-  color: white;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-top: 10px;
-  font-size: 15px;
-  transition: 0.2s ease;
-}
-
-.start-btn:hover {
-  background-color: #ff5722;
-  transform: scale(1.05);
-}
-
-.lobby-container p {
-  margin-top: 12px;
-  color: #666;
-  font-style: italic;
-}
+.lobby-actions { display:flex; gap:12px; align-items:center; margin-top:12px; }
+.start-btn { background: #ef4444; color:white; padding:10px 14px; border-radius:8px; border:none; }
+.leave-btn { padding:10px 12px; }
