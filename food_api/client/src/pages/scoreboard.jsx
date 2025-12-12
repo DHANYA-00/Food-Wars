@@ -27,7 +27,7 @@ export default function Scoreboard(){
           ))}
         </div>
         <div className="actions">
-          <button className="btn" onClick={()=> navigate("/")}>Back to Dashboard</button>
+          <button className="btn primary" onClick={()=> navigate("/")}>Back to Dashboard</button>
         </div>
       </div>
     </div>

@@ -211,7 +211,11 @@ export default function Game() {
           />
         ))}
       </div>
-      <div className="card">
+        <div className="app-brand">
+          <div className="brand-name">Food Wars</div>
+        </div>
+
+        <div className="card">
         
         {/* HEADER */}
         <div className="game-head">
@@ -219,9 +223,11 @@ export default function Game() {
             {waitingForHost ? "Waiting for host to start..." : currentDish?.name}
           </div>
 
-          <div className="meta">
-            <span className="rounds">Round {round > 0 ? round : 0}/{totalRounds}</span>
-            <span className="timer"> • ⏱ {timer ?? 0}s{timePerRound ? ` / ${timePerRound}s` : ''}</span>
+          <div className="right-head">
+            <div className="meta">
+              <span className="rounds">Round {round > 0 ? round : 0}/{totalRounds}</span>
+              <span className="timer"> • ⏱ {timer ?? 0}s{timePerRound ? ` / ${timePerRound}s` : ''}</span>
+            </div>
           </div>
         </div>
 
@@ -322,7 +328,7 @@ export default function Game() {
 
             {/* Host Button */}
             {isHost && showIngredients && (
-              <button className="btn next-round" onClick={nextRound}>
+              <button className="btn primary next-round" onClick={nextRound}>
                 ➤ Next Round
               </button>
             )}

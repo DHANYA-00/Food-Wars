@@ -92,10 +92,13 @@ export default function Lobby() {
         <div className="players">
           <h4>Players ({players.length})</h4>
           <ul className="player-list">
-                {players.map((p, i) => (
-              <li key={p.playerId || p.socketId || i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <img src={p.avatar || getAvatarUrl(p.playerId || p.name, 36)} onError={(e) => { e.currentTarget.src = createFallbackAvatar(p.name,36); }} alt={p.name} className="avatar" style={{ width:36, height:36 }} />
-                <span>{p.name} {p.playerId === playerId ? " (You)" : ""} {p.playerId === hostPlayerId ? " ⭐ Host" : ""}</span>
+            {players.map((p, i) => (
+              <li key={p.playerId || p.socketId || i} className="player-entry">
+                <img src={p.avatar || getAvatarUrl(p.playerId || p.name, 48)} onError={(e) => { e.currentTarget.src = createFallbackAvatar(p.name,48); }} alt={p.name} className="avatar" />
+                <div className="player-info">
+                  <div className="name">{p.name} {p.playerId === playerId ? <span className="you">(You)</span> : null}</div>
+                  <div className="meta">{p.playerId === hostPlayerId ? <span className="host-badge">Host ⭐</span> : null}</div>
+                </div>
               </li>
             ))}
           </ul>

@@ -9,7 +9,8 @@ export function hashString(s) {
 
 export function getAvatarUrl(seedInput, size = 64) {
   const seed = encodeURIComponent(String(seedInput || "player").trim() || "player");
-  const styles = ["bottts", "avataaars", "pixel-art", "identicon", "micah"];
+  // use more attractive cartoon styles
+  const styles = ["adventurer", "adventurer-neutral", "avataaars", "bottts", "pixel-art"];
   const idx = hashString(seed) % styles.length;
   const style = styles[idx];
   return `https://api.dicebear.com/6.x/${style}/svg?seed=${seed}&size=${size}`;

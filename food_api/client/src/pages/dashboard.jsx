@@ -23,8 +23,9 @@ export default function Dashboard() {
   const [timePerRound, setTimePerRound] = useState(20);
 
   const playerId = getOrCreatePlayerId();
-  // generate a deterministic-but-random avatar per playerId
-  const generatedAvatar = getAvatarUrl(playerId || name || Math.random().toString(36), 64);
+  // generate a random avatar that changes every time (use random seed)
+  const [randomSeed] = useState(() => Math.random().toString(36).substring(2, 15));
+  const generatedAvatar = getAvatarUrl(randomSeed, 64);
 
   const handleCreateRoom = () => {
     if (!name) return alert("Enter your name");
@@ -85,7 +86,10 @@ export default function Dashboard() {
         ) : (
           <div className="form">
             <h2>Join</h2>
-            <input placeholder="Your name" value={name} onChange={e => setName(e.target.value)} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <img src={generatedAvatar} onError={(e)=>{e.currentTarget.src = createFallbackAvatar(name||playerId,48)}} alt="avatar" className="avatar" style={{ width:48, height:48 }} />
+              <input placeholder="Your name" value={name} onChange={e => setName(e.target.value)} />
+            </div>
             <input placeholder="Room ID" value={roomId} onChange={e => setRoomId(e.target.value)} />
             <div className="actions">
               <button className="btn primary" onClick={handleJoinRoom}>Join</button>

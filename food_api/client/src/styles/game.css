@@ -82,3 +82,12 @@
 .score-card .rank{ font-weight:700; color:#6b7280; min-width:36px; text-align:center }
 .score-card .pname{ font-weight:700; color:var(--text); font-size:16px }
 .score-card .pscore{ margin-left:auto; font-weight:800; font-size:18px; color:#111827 }
+
+/* Play area layout and next-round button */
+.play-area{ display:flex; flex-direction:column; gap:12px; padding:8px }
+.btn.next-round{ align-self:center; margin-top:8px; }
+.btn.next-round:hover{ transform:none; }
+
+/* Scoreboard actions */
+.actions{ display:flex; justify-content:center; margin-top:24px; gap:12px }
+.actions .btn{ min-width:180px }
