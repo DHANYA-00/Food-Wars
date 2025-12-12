@@ -50,6 +50,9 @@
 }
 
 /* Meta (rounds + timer) styling */
+.dish-area{ text-align:center }
+.dish-title{ text-align:center; display:inline-block }
+
 .meta { font-weight: 700; color: #2b2b2b; font-size: 16px; display:flex; gap:8px; align-items:center; }
 .meta .rounds{ color:var(--text); }
 .meta .timer{ color:#6b6b6b; font-weight:600 }

@@ -215,7 +215,7 @@ export default function Game() {
         
         {/* HEADER */}
         <div className="game-head">
-          <div className="dish-title">
+          <div className="dish-title" style={{ fontWeight: 'bold', fontSize: '20px' }}>
             {waitingForHost ? "Waiting for host to start..." : currentDish?.name}
           </div>
 
@@ -238,7 +238,6 @@ export default function Game() {
                   alt={currentDish.name || 'Dish image'}
                   className="dish-img"
                 />
-                <h3>{currentDish.name}</h3>
               </>
             )}
 
@@ -333,6 +332,7 @@ export default function Game() {
       </div>
     </div>
   );
+
   
 }
 
