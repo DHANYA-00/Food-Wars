@@ -270,6 +270,36 @@ function setupSocket(server) {
       }
     });
 
+    // chat messages: broadcast to room so all players see chats
+    socket.on("sendMessage", (msg = {}, callback) => {
+      try {
+        const rid = msg.roomId || socket.roomId;
+        if (!rid || !rooms[rid]) {
+          console.warn("⚠️ sendMessage: invalid room", rid);
+          return callback?.({ ok: false, message: "Room not found" });
+        }
+
+        // normalize message payload
+        const message = {
+          roomId: rid,
+          playerId: msg.playerId || socket.playerId || null,
+          name: msg.name || null,
+          text: String(msg.text || "").slice(0, 1000),
+          ts: msg.ts || Date.now()
+        };
+
+        console.log(`💬 [chat] ${message.name || message.playerId} @ ${rid}: ${message.text}`);
+
+        // broadcast to everyone in the room
+        io.to(rid).emit("chatMessage", message);
+        console.log(`🔊 [chat] broadcasted to room ${rid}`);
+        callback?.({ ok: true });
+      } catch (err) {
+        console.error("❌ sendMessage error:", err);
+        callback?.({ ok: false, message: "Server error sending message" });
+      }
+    });
+
     // disconnect
     socket.on("disconnect", () => {
       try {

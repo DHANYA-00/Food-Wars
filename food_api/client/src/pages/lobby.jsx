@@ -116,13 +116,13 @@ export default function Lobby() {
         <div className="lobby-actions">
           {isHost ? (
             <>
-              <button className="btn" onClick={updateSettings}>Update Settings</button>
+              <button className="btn primary" onClick={updateSettings}>Update Settings</button>
               <button className="btn primary" onClick={startGame} disabled={players.length < 1}>Start Game</button>
             </>
           ) : (
             <div>Waiting for host to start…</div>
           )}
-          <button className="btn" onClick={() => navigate("/")}>Leave</button>
+          <button className="btn primary" onClick={() => navigate("/")}>Leave</button>
         </div>
       </div>
     </div>

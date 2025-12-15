@@ -67,7 +67,7 @@ export default function Dashboard() {
         {!mode ? (
           <div className="choices">
             <button className="btn primary" onClick={() => setMode("create")}>Create Room</button>
-            <button className="btn" onClick={() => setMode("join")}>Join Room</button>
+            <button className="btn primary" onClick={() => setMode("join")}>Join Room</button>
           </div>
         ) : mode === "create" ? (
             <div className="form">
@@ -80,7 +80,7 @@ export default function Dashboard() {
             <input type="number" min={5} value={timePerRound} onChange={e => setTimePerRound(Number(e.target.value))} placeholder="Time per round (s)" />
             <div className="actions">
               <button className="btn primary" onClick={handleCreateRoom}>Create</button>
-              <button className="btn" onClick={() => setMode(null)}>Back</button>
+              <button className="btn secondary" onClick={() => setMode(null)}>Back</button>
             </div>
           </div>
         ) : (
@@ -93,7 +93,7 @@ export default function Dashboard() {
             <input placeholder="Room ID" value={roomId} onChange={e => setRoomId(e.target.value)} />
             <div className="actions">
               <button className="btn primary" onClick={handleJoinRoom}>Join</button>
-              <button className="btn" onClick={() => setMode(null)}>Back</button>
+              <button className="btn secondary" onClick={() => setMode(null)}>Back</button>
             </div>
           </div>
         )}

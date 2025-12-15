@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { socket } from "../socket";
 import "../styles/theme.css";
@@ -27,6 +27,9 @@ export default function Game() {
   const [guess, setGuess] = useState("");
   const [popups, setPopups] = useState([]);
   const [confetti, setConfetti] = useState([]);
+  const [messages, setMessages] = useState([]);
+  const [chatInput, setChatInput] = useState("");
+  const chatRef = useRef(null);
 
   // create confetti pieces for a short celebration animation
   const spawnConfetti = () => {
@@ -43,6 +46,8 @@ export default function Game() {
     // clear after animation
     setTimeout(() => setConfetti([]), 2200);
   };
+
+  
 
   // If navigated from Lobby with initial game payload, apply it immediately
   useEffect(() => {
@@ -66,6 +71,9 @@ export default function Game() {
 
   // ===== CONNECT + LISTEN =====
   useEffect(() => {
+    // prevent the whole page from scrolling while Game is mounted
+    try { document.body.classList.add('game-page'); } catch {}
+
     if (!socket.connected) socket.connect();
 
     // join the room (server expects { roomId, name, playerId })
@@ -116,6 +124,18 @@ export default function Game() {
       setPlayers(pList || []);
     });
 
+    // chat messages from server — avoid duplicates (optimistic + broadcast)
+    socket.on("chatMessage", (msg) => {
+      setMessages((prev) => {
+        if (!msg) return prev;
+        const exists = prev.some(x => x.ts === msg.ts && x.playerId === msg.playerId);
+        if (exists) return prev;
+        return [...prev, msg];
+      });
+    });
+
+    // keep listener cleanup in same effect
+
     socket.on("ingredientResult", (res) => {
       // payload: { ingredient, playerId: pid, correct, points, players }
       const { ingredient, playerId: pid, correct, points, players: updated } = res || {};
@@ -138,6 +158,7 @@ export default function Game() {
         setPopups(p => [...p, { id, message, type: "success" }]);
         setTimeout(() => setPopups(p => p.filter(x => x.id !== id)), 2500);
         spawnConfetti();
+        // celebration: no sound (was removed)
       } else {
         // Another player found it — show a short notice to others and mark it
         setFoundByOthers(prev => Array.from(new Set([...prev, JSON.stringify({ ingredient: clean, name: player.name || 'Someone' })])));
@@ -145,6 +166,7 @@ export default function Game() {
         const id = Date.now() + Math.random();
         setPopups(p => [...p, { id, message, type: "notice" }]);
         setTimeout(() => setPopups(p => p.filter(x => x.id !== id)), 1400);
+        // notice: no sound (was removed)
       }
     });
     socket.on("timerUpdate", ({ timer: t }) => {
@@ -171,6 +193,8 @@ export default function Game() {
       socket.off("gameOver");
       socket.off("gameStarted");
       socket.off("roomUpdate");
+      socket.off("chatMessage");
+      try { document.body.classList.remove('game-page'); } catch {}
     };
   }, [roomId, navigate, playerId, name]);
 
@@ -192,6 +216,26 @@ export default function Game() {
   };
 
   const waitingForHost = round === 0 || !currentDish;
+
+  const sendChat = () => {
+    const text = String(chatInput || "").trim();
+    if (!text) return;
+    const msg = { roomId, playerId, name, text, ts: Date.now() };
+    // optimistic add
+    setMessages(m => [...m, msg]);
+    setChatInput("");
+    try { socket.emit("sendMessage", msg); } catch (e) { /* ignore */ }
+  };
+
+  // auto-scroll chat to bottom when messages change
+  useEffect(() => {
+    const el = chatRef.current;
+    if (!el) return;
+    // allow the DOM to update then scroll
+    requestAnimationFrame(() => {
+      try { el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' }); } catch { el.scrollTop = el.scrollHeight; }
+    });
+  }, [messages]);
 
   return (
     <div className="page game">
@@ -310,6 +354,23 @@ export default function Game() {
                   </li>
                 ))}
               </ul>
+            </div>
+
+            {/* Chat */}
+            <div className="chat-box">
+              <h4>Chat</h4>
+              <div className="chat-messages" ref={chatRef}>
+                {messages.map((m, i) => (
+                  <div key={`${m.playerId || 'p'}-${m.ts}-${i}`} className={`chat-message ${m.playerId === playerId ? 'me' : 'other'}`}>
+                    <div className="chat-meta"><strong>{m.playerId === playerId ? 'You' : (m.name || 'Someone')}</strong> <small className="ts">{new Date(m.ts).toLocaleTimeString()}</small></div>
+                    <div className="chat-text">{m.text}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="chat-input-row">
+                <input value={chatInput} onChange={e=>setChatInput(e.target.value)} placeholder="Say something..." onKeyDown={(e)=>{ if(e.key==='Enter') sendChat(); }} />
+                <button className="btn primary" onClick={sendChat} disabled={!chatInput.trim()}>Send</button>
+              </div>
             </div>
 
             {/* Guess */}
