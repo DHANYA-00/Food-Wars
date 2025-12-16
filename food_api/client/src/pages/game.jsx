@@ -255,8 +255,13 @@ export default function Game() {
           />
         ))}
       </div>
-        <div className="app-brand">
-          <div className="brand-name">Food Wars</div>
+        <div className="app-brand" style={{ opacity: 1 }}>
+          <div
+            className="brand-name"
+            style={{ border: 'none', background: 'transparent', boxShadow: 'none', backdropFilter: 'none', color: '#1f2937' }}
+          >
+            🍲Food Wars
+          </div>
         </div>
 
         <div className="card">
@@ -338,10 +343,10 @@ export default function Game() {
           </div>
 
           {/* RIGHT SIDE */}
-          <div className="play-area">
+          <div className="play-area" style={{ minHeight: 0 }}>
             
             {/* Player List */}
-            <div className="players-box">
+            <div className="players-box" style={{ flex: 'none' }}>
               <h4>Players</h4>
               <ul>
                 {players.map((p, i) => (
@@ -357,9 +362,9 @@ export default function Game() {
             </div>
 
             {/* Chat */}
-            <div className="chat-box">
+            <div className="chat-box" style={{ display: 'flex', flexDirection: 'column', flex: 'none' }}>
               <h4>Chat</h4>
-              <div className="chat-messages" ref={chatRef}>
+              <div className="chat-messages" ref={chatRef} style={{ maxHeight: 260, overflow: 'auto' }}>
                 {messages.map((m, i) => (
                   <div key={`${m.playerId || 'p'}-${m.ts}-${i}`} className={`chat-message ${m.playerId === playerId ? 'me' : 'other'}`}>
                     <div className="chat-meta"><strong>{m.playerId === playerId ? 'You' : (m.name || 'Someone')}</strong> <small className="ts">{new Date(m.ts).toLocaleTimeString()}</small></div>
@@ -374,7 +379,7 @@ export default function Game() {
             </div>
 
             {/* Guess */}
-            <div className="guess-box">
+            <div className="guess-box" style={{ flex: 'none', paddingTop: 8 }}>
               <input
                 value={guess}
                 onChange={(e) => setGuess(e.target.value)}

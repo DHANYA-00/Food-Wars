@@ -12,8 +12,8 @@
 
 *{box-sizing:border-box}
 html,body,#root{height:100%}
-/* when the Game page is active we prevent page-level scrolling */
-body.game-page{overflow:hidden}
+/* allow the Game page itself to scroll */
+body.game-page{overflow:auto}
 body{
   margin:0;
   font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
@@ -40,10 +40,11 @@ body{
   padding:22px;
   box-shadow:var(--shadow);
   border: 1px solid rgba(255,255,255,0.6);
-  max-height: calc(100vh - 80px);
+  /* let the page control the scroll; no internal height clamp */
+  max-height: none;
   display:flex;
   flex-direction:column;
-  overflow: hidden; /* prevent internal card scrolling; only inner panels scroll */
+  overflow: visible;
 }
 
 /* Dashboard */
@@ -110,7 +111,7 @@ body{
 .dish-area{flex:1 1 0;min-width:280px;text-align:center}
 .dish-img{width:100%;max-width:360px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,0.06)}
 .dish-placeholder{height:200px;display:flex;align-items:center;justify-content:center;background:linear-gradient(90deg,#fff,#fff3);border-radius:12px}
-.play-area{flex:1;min-width:260px;max-width:480px}
+.play-area{flex:1 1 0;min-width:320px;max-width:none}
 .players-box ul{list-style:none;padding:0}
 .players-box li{padding:10px;margin-bottom:8px;background:#fff;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.03)}
 .guess-box{display:flex;gap:8px;margin-top:12px}
