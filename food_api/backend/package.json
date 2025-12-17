@@ -1,18 +1,8 @@
 {
-  "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^17.2.3",
-    "express": "^5.1.0",
-    "mongoose": "^8.19.3",
-    "nodejs": "^0.0.0",
-    "nodemon": "^3.1.10",
-    "socket.io": "^4.8.1",
-    "string-similarity": "^4.0.4"
-  },
   "name": "food_api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js"
@@ -20,5 +10,17 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs"
+  "type": "commonjs",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "mongoose": "^8.19.3",
+    "nodemon": "^3.1.10",
+    "socket.io": "^4.8.1",
+    "string-similarity": "^4.0.4"
+  }
 }
