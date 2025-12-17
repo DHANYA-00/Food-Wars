@@ -1,9 +1,9 @@
 // src/pages/lobby.jsx
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { socket } from "../socket";
+import { socket } from "../Socket";
 import "../styles/theme.css";
-import { getAvatarUrl, createFallbackAvatar } from "../utils/avatar";
+import { getAvatarUrl, createFallbackAvatar } from "../utils/Avatar";
 
 export default function Lobby() {
   const { roomId: urlRoomId } = useParams();

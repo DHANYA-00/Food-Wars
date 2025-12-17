@@ -1,9 +1,9 @@
 // src/pages/dashboard.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { socket } from "../socket";
+import { socket } from "../Socket";
 import "../styles/theme.css";
-import { getAvatarUrl, createFallbackAvatar } from "../utils/avatar";
+import { getAvatarUrl, createFallbackAvatar } from "../utils/Avatar";
 
 function getOrCreatePlayerId() {
   let pid = localStorage.getItem("playerId");
