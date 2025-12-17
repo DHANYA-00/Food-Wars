@@ -1,7 +1,6 @@
 // routes/dishRoutes.js
 const express = require("express");
-const path = require("path");
-const Dish = require(path.join(__dirname, "..", "models", "Dish.js"));
+const Dish = require("../models/Dish.js");
 const router = express.Router();
 
 // POST /dishes - add a dish
