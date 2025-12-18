@@ -1,7 +1,7 @@
 // src/pages/dashboard.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { socket } from "../Socket.js";
+import { socket } from "../socket.js";
 import "../styles/Theme.css";
 import { getAvatarUrl, createFallbackAvatar } from "../utils/avatar.js";
 
