@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { socket } from "../Socket.js";
 import "../styles/Theme.css";
-import { getAvatarUrl, createFallbackAvatar } from "../utils/Avatar";
+import { getAvatarUrl, createFallbackAvatar } from "../utils/avatar.js";
 
 export default function Lobby() {
   const { roomId: urlRoomId } = useParams();

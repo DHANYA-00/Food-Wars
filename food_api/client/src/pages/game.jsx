@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
-import { socket } from "../Socket.js";
-import "../styles/Theme.css";
-import "../styles/Game.css";
-import { getAvatarUrl, createFallbackAvatar } from "../utils/Avatar";
+import { socket } from "../socket.js";
+import "../styles/theme.css";
+import "../styles/game.css";
+import { getAvatarUrl, createFallbackAvatar } from "../utils/avatar.js";
 
 export default function Game() {
   const { roomId } = useParams();

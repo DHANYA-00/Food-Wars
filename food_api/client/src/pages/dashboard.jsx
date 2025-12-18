@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { socket } from "../Socket.js";
 import "../styles/Theme.css";
-import { getAvatarUrl, createFallbackAvatar } from "../utils/Avatar";
+import { getAvatarUrl, createFallbackAvatar } from "../utils/avatar.js";
 
 function getOrCreatePlayerId() {
   let pid = localStorage.getItem("playerId");

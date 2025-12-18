@@ -3,7 +3,7 @@ import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "../styles/Theme.css";
 import "../styles/Game.css";
-import { getAvatarUrl, createFallbackAvatar } from "../utils/Avatar";
+import { getAvatarUrl, createFallbackAvatar } from "../utils/avatar";
 
 export default function Scoreboard(){
   const location = useLocation();
