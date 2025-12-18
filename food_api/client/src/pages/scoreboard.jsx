@@ -1,8 +1,8 @@
 // src/pages/scoreboard.jsx
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import "../styles/Theme.css";
-import "../styles/Game.css";
+import "../styles/theme.css";
+import "../styles/game.css";
 import { getAvatarUrl, createFallbackAvatar } from "../utils/avatar.js";
 
 export default function Scoreboard(){

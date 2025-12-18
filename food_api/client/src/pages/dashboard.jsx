@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { socket } from "../socket.js";
-import "../styles/Theme.css";
+import "../styles/theme.css";
 import { getAvatarUrl, createFallbackAvatar } from "../utils/avatar.js";
 
 function getOrCreatePlayerId() {
