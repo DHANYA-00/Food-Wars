@@ -1,8 +1,8 @@
 // src/pages/lobby.jsx
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { socket } from "../Socket";
-import "../styles/theme.css";
+import { socket } from "../Socket.js";
+import "../styles/Theme.css";
 import { getAvatarUrl, createFallbackAvatar } from "../utils/Avatar";
 
 export default function Lobby() {

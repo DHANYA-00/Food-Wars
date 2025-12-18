@@ -1,8 +1,8 @@
 // src/pages/dashboard.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { socket } from "../Socket";
-import "../styles/theme.css";
+import { socket } from "../Socket.js";
+import "../styles/Theme.css";
 import { getAvatarUrl, createFallbackAvatar } from "../utils/Avatar";
 
 function getOrCreatePlayerId() {

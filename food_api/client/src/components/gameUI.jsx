@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "../styles/game.css";
+import "../styles/Game.css";
 
 export default function GameUI({ socket }) {
   const [input, setInput] = useState("");

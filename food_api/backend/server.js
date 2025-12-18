@@ -6,8 +6,8 @@ const cors = require("cors");
 
 // Local imports
 const connectDB = require("./config/db");
-const dishRoutes = require("./routes/dishRoutes");
-const setupSocket = require("./socket");
+const dishRoutes = require("./routes/DishRoutes");
+const setupSocket = require("./Socket");
 
 // Initialize app
 const app = express();

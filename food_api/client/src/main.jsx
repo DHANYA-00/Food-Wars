@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import { socket } from "./socket";
-import "./styles/theme.css";
+import "./styles/Theme.css";
 
 if (!socket.connected) socket.connect();
 

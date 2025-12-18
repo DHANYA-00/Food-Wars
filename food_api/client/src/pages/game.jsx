@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
-import { socket } from "../Socket";
-import "../styles/theme.css";
-import "../styles/game.css";
+import { socket } from "../Socket.js";
+import "../styles/Theme.css";
+import "../styles/Game.css";
 import { getAvatarUrl, createFallbackAvatar } from "../utils/Avatar";
 
 export default function Game() {
