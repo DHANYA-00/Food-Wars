@@ -139,6 +139,10 @@ function setupSocket(server) {
         const room = rooms[roomId];
         if (!room) return callback?.({ ok: false, message: "Room not found" });
         if (room.hostPlayerId !== playerId) return callback?.({ ok: false, message: "Only host can start" });
+        // require at least 2 players to start (no solo games)
+        if (!room.players || room.players.length < 2) {
+          return callback?.({ ok: false, message: "Need at least 2 players to start" });
+        }
 
         room.currentRound = (room.currentRound || 0) + 1;
 

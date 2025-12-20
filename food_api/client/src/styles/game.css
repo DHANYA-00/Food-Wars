@@ -91,3 +91,21 @@
 /* Scoreboard actions */
 .actions{ display:flex; justify-content:center; margin-top:24px; gap:12px }
 .actions .btn{ min-width:180px }
+
+/* Responsive tweaks */
+@media (max-width:560px){
+  .game-body{ flex-direction:column }
+  .dish-image{ width:100%; height:auto }
+  .popups-root{ right: 12px; top: 12px }
+  .message-popup{ right: 12px; top: auto; bottom: 16px; max-width: calc(100% - 24px) }
+  .chat-messages{ max-height: 200px }
+  .guess-box{ flex-direction:column }
+  .guess-box button{ width:100% }
+  .lobby-settings{ gap:10px }
+}
+
+@media (max-width:420px){
+  .actions{ flex-direction:column }
+  .actions .btn{ min-width:100%; min-height:44px }
+  .players-list ul{ max-height: 200px; overflow:auto }
+}

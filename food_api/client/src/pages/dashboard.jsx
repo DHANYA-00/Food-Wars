@@ -61,7 +61,7 @@ export default function Dashboard() {
 
   return (
     <div className="page dashboard">
-      <div className="card">
+      <div className={`card ${mode ? 'dashboard-form' : ''}`}>
         <h1 className="title">🍲 Food War</h1>
 
         {!mode ? (
@@ -70,30 +70,42 @@ export default function Dashboard() {
             <button className="btn primary" onClick={() => setMode("join")}>Join Room</button>
           </div>
         ) : mode === "create" ? (
-            <div className="form">
+          <div className="form">
             <h2>Create</h2>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <img src={generatedAvatar} onError={(e)=>{e.currentTarget.src = createFallbackAvatar(name||playerId,48)}} alt="avatar" className="avatar" style={{ width:48, height:48 }} />
-              <input placeholder="Your name" value={name} onChange={e => setName(e.target.value)} />
+            <div className="avatar-wrap">
+              <img
+                src={generatedAvatar}
+                onError={(e)=>{e.currentTarget.src = createFallbackAvatar(name||playerId,64)}}
+                alt="avatar"
+                className="avatar"
+                style={{ width:64, height:64 }}
+              />
             </div>
+            <input placeholder="Your name" value={name} onChange={e => setName(e.target.value)} />
             <input type="number" min={1} value={totalRounds} onChange={e => setTotalRounds(Number(e.target.value))} placeholder="Total rounds" />
             <input type="number" min={5} value={timePerRound} onChange={e => setTimePerRound(Number(e.target.value))} placeholder="Time per round (s)" />
-            <div className="actions">
+            <div className="actions edge">
               <button className="btn primary" onClick={handleCreateRoom}>Create</button>
-              <button className="btn secondary" onClick={() => setMode(null)}>Back</button>
+              <button className="btn secondary" onClick={() => setMode(null)}>Leave</button>
             </div>
           </div>
         ) : (
           <div className="form">
             <h2>Join</h2>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <img src={generatedAvatar} onError={(e)=>{e.currentTarget.src = createFallbackAvatar(name||playerId,48)}} alt="avatar" className="avatar" style={{ width:48, height:48 }} />
-              <input placeholder="Your name" value={name} onChange={e => setName(e.target.value)} />
+            <div className="avatar-wrap">
+              <img
+                src={generatedAvatar}
+                onError={(e)=>{e.currentTarget.src = createFallbackAvatar(name||playerId,64)}}
+                alt="avatar"
+                className="avatar"
+                style={{ width:64, height:64 }}
+              />
             </div>
+            <input placeholder="Your name" value={name} onChange={e => setName(e.target.value)} />
             <input placeholder="Room ID" value={roomId} onChange={e => setRoomId(e.target.value)} />
-            <div className="actions">
+            <div className="actions edge">
               <button className="btn primary" onClick={handleJoinRoom}>Join</button>
-              <button className="btn secondary" onClick={() => setMode(null)}>Back</button>
+              <button className="btn secondary" onClick={() => setMode(null)}>Leave</button>
             </div>
           </div>
         )}

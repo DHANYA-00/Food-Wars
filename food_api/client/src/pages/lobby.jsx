@@ -68,7 +68,11 @@ export default function Lobby() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomId]);
 
-  const isHost = hostPlayerId === playerId;
+  const isHost = (
+    hostPlayerId
+      ? hostPlayerId === playerId
+      : (initialIsHost || (players && players[0] && players[0].playerId === playerId))
+  );
 
   const startGame = () => {
     if (!isHost) return;
@@ -87,11 +91,11 @@ export default function Lobby() {
   return (
     <div className="page lobby">
       <div className="card">
-        <h2>🍲 Room: {roomId}</h2>
+        <h2>🍲 Room Code: {roomId}</h2>
 
         <div className="players">
           <h4>Players ({players.length})</h4>
-          <ul className="player-list">
+          <ul className={`player-list ${players.length <= 4 ? 'few' : ''}`}>
             {players.map((p, i) => (
               <li key={p.playerId || p.socketId || i} className="player-entry">
                 <img src={p.avatar || getAvatarUrl(p.playerId || p.name, 48)} onError={(e) => { e.currentTarget.src = createFallbackAvatar(p.name,48); }} alt={p.name} className="avatar" />
@@ -115,12 +119,16 @@ export default function Lobby() {
 
         <div className="lobby-actions">
           {isHost ? (
-            <>
-              <button className="btn primary" onClick={updateSettings}>Update Settings</button>
-              <button className="btn primary" onClick={startGame} disabled={players.length < 1}>Start Game</button>
-            </>
+            players.length >= 2 ? (
+              <>
+                <button className="btn primary" onClick={updateSettings}>Update Settings</button>
+                <button className="btn primary" onClick={startGame}>Start Game</button>
+              </>
+            ) : (
+              <div>Waiting for others to join…</div>
+            )
           ) : (
-            <div>Waiting for host to start…</div>
+            hostPlayerId ? <div>Waiting for host to start…</div> : null
           )}
           <button className="btn primary" onClick={() => navigate("/")}>Leave</button>
         </div>
