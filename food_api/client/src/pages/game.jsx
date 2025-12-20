@@ -1,3 +1,12 @@
+    // network lifecycle
+    const onConnect = () => setIsDisconnected(false);
+    const onDisconnect = () => setIsDisconnected(true);
+    const onConnectError = () => setIsDisconnected(true);
+    socket.on('connect', onConnect);
+    socket.on('disconnect', onDisconnect);
+    socket.on('connect_error', onConnectError);
+    try { socket.io.on?.('reconnect_attempt', () => setIsDisconnected(true)); } catch {}
+
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { socket } from "../socket.js";
@@ -30,6 +39,7 @@ export default function Game() {
   const [messages, setMessages] = useState([]);
   const [chatInput, setChatInput] = useState("");
   const chatRef = useRef(null);
+  const [isDisconnected, setIsDisconnected] = useState(false);
 
   // create confetti pieces for a short celebration animation
   const spawnConfetti = () => {
@@ -194,6 +204,9 @@ export default function Game() {
       socket.off("gameStarted");
       socket.off("roomUpdate");
       socket.off("chatMessage");
+      socket.off('connect', onConnect);
+      socket.off('disconnect', onDisconnect);
+      socket.off('connect_error', onConnectError);
       try { document.body.classList.remove('game-page'); } catch {}
     };
   }, [roomId, navigate, playerId, name]);
@@ -239,6 +252,16 @@ export default function Game() {
 
   return (
     <div className="page game">
+      {isDisconnected && (
+        <div className="net-overlay" role="status" aria-live="polite">
+          <div className="net-loader" />
+          <div className="net-text">Reconnecting…</div>
+          <div className="net-actions">
+            <button className="btn primary" onClick={() => { try { socket.connect(); } catch {} }}>Try Reconnect</button>
+            <button className="btn secondary" onClick={() => window.location.reload()}>Reload</button>
+          </div>
+        </div>
+      )}
       <div className="popups-root">
         {popups.map(p => (
           <div key={p.id} className={`message-popup ${p.type || ''}`}>
@@ -255,15 +278,7 @@ export default function Game() {
           />
         ))}
       </div>
-        <div className="app-brand" style={{ opacity: 1 }}>
-          <div
-            className="brand-name"
-            style={{ border: 'none', background: 'transparent', boxShadow: 'none', backdropFilter: 'none', color: '#1f2937' }}
-          >
-            🍲Food Wars
-          </div>
-        </div>
-
+        
         <div className="card">
         
         {/* HEADER */}
@@ -352,7 +367,7 @@ export default function Game() {
                 {players.map((p, i) => (
                   <li key={p.playerId} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <img src={p.avatar || getAvatarUrl(p.playerId || p.name,48)} onError={(e)=>{e.currentTarget.src = createFallbackAvatar(p.name,48);}} alt={p.name} className="avatar" />
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, width: '100%' }}>
                       <span>{p.name} {p.playerId === playerId ? " (You)" : ""} {i === 0 ? " ⭐ Host" : ""}</span>
                       <strong style={{ fontSize: 13 }}>{p.score}</strong>
                     </div>
@@ -393,7 +408,7 @@ export default function Game() {
             </div>
 
             {/* Host Button */}
-            {isHost && showIngredients && (
+            {isHost && (showIngredients || (Number(timer) === 0)) && (
               <button className="btn primary next-round" onClick={nextRound}>
                 ➤ Next Round
               </button>

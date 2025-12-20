@@ -39,7 +39,8 @@ body{
   border-radius:20px;
   padding:22px;
   box-shadow:var(--shadow);
-  border: 1px solid rgba(255,255,255,0.6);
+  /* darken the card border for better contrast on light backgrounds */
+  border: 1px solid rgba(17,24,39,0.08);
   /* let the page control the scroll; no internal height clamp */
   max-height: none;
   display:flex;
@@ -72,12 +73,12 @@ body{
 .lobby-actions{display:flex;gap:10px;align-items:center;justify-content:center;margin-top:12px}
 
 /* Lobby enhancements */
-.lobby .card{ padding:18px 22px; border-radius:18px; position:relative; max-width: 760px; margin: 0 auto }
-.lobby .card h2{ margin:0 0 12px 0; font-size:22px; display:flex; align-items:center; gap:10px }
+.lobby .card{ padding:14px 16px; border-radius:16px; position:relative; max-width: 720px; margin: 0 auto }
+.lobby .card h2{ margin:0 0 8px 0; font-size:20px; display:flex; align-items:center; gap:8px }
 .lobby .card h2:after{ content: ''; flex:1; height:1px; background: linear-gradient(90deg, rgba(0,0,0,0.04), rgba(0,0,0,0.01)); margin-left:12px }
-.player-list{ margin-top:12px }
-.player-entry{ display:flex; gap:12px; align-items:center; padding:10px; background: linear-gradient(180deg, #ffffff, #fbfbff); border-radius:12px; box-shadow: 0 8px 18px rgba(12,20,40,0.04); }
-.player-entry .avatar{ width:48px; height:48px; border-radius:12px; object-fit:cover; border:2px solid rgba(255,255,255,0.6) }
+.player-list{ margin-top:8px }
+.player-entry{ display:flex; gap:8px; align-items:center; padding:8px; background: linear-gradient(180deg, #ffffff, #fbfbff); border-radius:12px; box-shadow: 0 8px 18px rgba(12,20,40,0.04); }
+.player-entry .avatar{ width:40px; height:40px; border-radius:12px; object-fit:cover; border:2px solid rgba(255,255,255,0.6) }
 .player-entry .player-info{ display:flex; flex-direction:column }
 .player-entry .name{ font-weight:700; color:var(--text) }
 .player-entry .you{ font-weight:600; font-size:13px; color:#6b7280; margin-left:6px }
@@ -85,19 +86,21 @@ body{
 .player-entry .host-badge{ background: linear-gradient(90deg,#fff7ed,#fff3d6); padding:4px 8px; border-radius:999px; font-weight:700; color:#b45309 }
 .player-entry .score{ color:#374151 }
 
-.lobby-settings{ display:flex; gap:16px; align-items:center; justify-content:start; margin-top:14px }
+.lobby-settings{ display:flex; gap:16px; align-items:center; justify-content:start; margin-top:12px }
 .lobby-settings .form-row{ display:flex; flex-direction:column; font-weight:600; color:var(--text) }
 .lobby-settings .form-input{ padding:10px;border-radius:10px;border:1px solid rgba(0,0,0,0.06); width:120px }
 
-.lobby-actions{ display:flex; gap:10px; align-items:center; justify-content:flex-end; margin-top:18px }
-.lobby-actions .btn{ min-width:120px }
+.lobby-actions{ display:flex; gap:10px; align-items:center; justify-content:flex-end; margin-top:12px }
+.lobby-actions .btn{ min-width:96px }
+/* slightly smaller buttons within lobby to look shorter */
+.lobby .btn{ padding:8px 12px; font-size:14px }
 
 /* subtle bg accent for lobby */
 .lobby .card::before{ content:''; position:absolute; right:-40px; top:-40px; width:140px; height:140px; background: radial-gradient(circle at 30% 30%, rgba(255,200,230,0.25), transparent 40%); border-radius:50%; pointer-events:none }
 
 /* Lobby: grid list for many players */
 .lobby .players{ position:relative }
-.lobby .player-list{ display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px; max-height: 420px; overflow:auto; padding-right:4px; justify-items:center }
+.lobby .player-list{ display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:10px; max-height: 300px; overflow:auto; padding-right:4px; justify-items:center }
 .lobby .player-list.few{ display:flex; flex-direction:column; gap:10px; max-width: 100%; margin: 0; max-height:none; overflow:visible }
 .lobby .player-list.few .player-entry{ width:100%; flex-direction:row; align-items:center; justify-content:space-between; padding:10px }
 .lobby .player-list.few .player-entry .player-info{ align-items:flex-start }
@@ -115,10 +118,14 @@ body{
 
 /* Game */
 .game-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.game-head .dish-title{ padding-left:16px }
 .right-head{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
 
 /* Page-level brand logo in the top-left corner */
 .page.game{ position: relative }
+.page.game .app-brand{ display:none }
+/* Ensure brand is hidden even if it's mounted outside the page container */
+body.game-page .app-brand{ display:none !important }
 .app-brand{ position: fixed; top:20px; left:20px; color:var(--text); opacity:0.7; pointer-events:none; user-select:none; z-index:10; display:flex; align-items:center; justify-content:center; }
 .app-brand .brand-name{ font-weight:900; font-size:18px; line-height:1; letter-spacing:-0.5px; margin:0; padding:8px 14px; border:2px solid currentColor; border-radius:8px; background:rgba(255,255,255,0.5); backdrop-filter:blur(4px); box-shadow:0 4px 12px rgba(0,0,0,0.08); }
 .app-brand .brand-tag{ display:none }
@@ -127,25 +134,35 @@ body{
 .card{ position:relative; z-index:1 }
 .game-flex{display:flex;gap:20px;flex-wrap:nowrap;flex:1;align-items:flex-start;overflow:visible}
 .dish-area{flex:1 1 0;min-width:280px;text-align:center}
-.dish-img{width:100%;max-width:360px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,0.06)}
+.dish-img{width:100%;max-width:360px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,0.06); border:2px solid rgba(17,24,39,0.08)}
 .dish-placeholder{height:200px;display:flex;align-items:center;justify-content:center;background:linear-gradient(90deg,#fff,#fff3);border-radius:12px}
 .play-area{flex:1 1 0;min-width:320px;max-width:none}
+/* players container styled similar to chat */
+.players-box{ background:#fff; border:1px solid rgba(17,24,39,0.08); border-radius:12px; padding:10px; box-shadow:0 6px 18px rgba(0,0,0,0.03) }
 .players-box ul{list-style:none;padding:0}
-.players-box li{padding:10px;margin-bottom:8px;background:#fff;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.03)}
+.players-box li{padding:10px;margin-bottom:8px;background:#fff;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.03); border:1px solid rgba(17,24,39,0.08)}
+/* keep players area compact when many users join */
+.players-box ul{ max-height: 260px; overflow:auto }
 .guess-box{display:flex;gap:8px;margin-top:12px}
-.guess-box input{flex:1;padding:10px;border-radius:10px;border:1px solid rgba(0,0,0,0.06)}
-.ingredient-chip{display:inline-block;padding:8px 12px;border-radius:18px;background:var(--mint);margin:6px}
+.guess-box input{flex:1;padding:10px;border-radius:10px;border:1px solid rgba(17,24,39,0.12); outline:none}
+.ingredient-chip{display:inline-block;padding:8px 12px;border-radius:18px;background:var(--mint);margin:6px; border:none}
+.ingredient-chip.found-me{ background:#d1fae5 }
+.ingredient-chip.found-other{ background:#e0e7ff }
+.ingredient-chip.remaining{ background:#fee2e2 }
 
 /* Chat styles */
-.chat-box{ margin-top:12px; background: #fff; border-radius:12px; padding:10px; box-shadow:0 6px 18px rgba(0,0,0,0.03) }
+.chat-box{ margin-top:12px; background: #fff; border-radius:12px; padding:10px; box-shadow:0 6px 18px rgba(0,0,0,0.03); border:1px solid rgba(17,24,39,0.08) }
 .chat-messages{ max-height:240px; overflow:auto; display:flex; flex-direction:column; gap:8px; padding:6px }
-.chat-message{ padding:8px 10px; border-radius:10px; background:#f8fafc; }
+.chat-message{ padding:8px 10px; border-radius:10px; background:#f8fafc; border:1px solid rgba(17,24,39,0.06) }
 .chat-message.me{ background: linear-gradient(90deg,#d1fae5,#86efac); align-self:flex-end }
 .chat-message.other{ background:#f3f4f6; align-self:flex-start }
 .chat-meta{ font-size:12px; color:#6b7280; margin-bottom:4px }
 .chat-text{ font-size:14px; color:var(--text) }
 .chat-input-row{ display:flex; gap:8px; margin-top:8px }
-.chat-input-row input{ flex:1; padding:8px 10px; border-radius:10px; border:1px solid rgba(0,0,0,0.06) }
+.chat-input-row input{ flex:1; padding:8px 10px; border-radius:10px; border:1px solid rgba(17,24,39,0.12); outline:none }
+
+/* header separation for the game card */
+.game-head{ border-bottom:1px solid rgba(17,24,39,0.08); padding-bottom:8px }
 
 /* Scoreboard */
 .scoregrid{display:flex;flex-direction:column;gap:10px}
