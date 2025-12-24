@@ -22,17 +22,21 @@
 
 .message-popup {
   position: relative;
-  background: #ffffff;
+  background: #fafafa;
   color: #1f2937;
   padding: 12px 16px;
   border-radius: 12px;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.15), 0 2px 6px rgba(0,0,0,0.08);
-  border: 1px solid rgba(0,0,0,0.1);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15), 0 2px 8px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.4);
+  border: 1px solid rgba(0,0,0,0.15);
   font-weight: 600;
   z-index: 999;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(2px);
   transform: translateY(0);
   animation: popupFloat 0.4s ease-out;
+  /* Paper texture effect */
+  background-image: radial-gradient(circle at 10% 20%, rgba(255,255,255,0.1) 0.1px, transparent 0.1px),
+                radial-gradient(circle at 90% 80%, rgba(255,255,255,0.1) 0.1px, transparent 0.1px);
+  background-size: 30px 30px;
 }
 
 @keyframes popupFloat {
@@ -41,20 +45,28 @@
 }
 
 .message-popup.success {
-  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  background: linear-gradient(135deg, #f0fdf4, #e7fbeb);
   color: #166534;
-  box-shadow: 0 6px 16px rgba(34, 197, 94, 0.15), 0 2px 6px rgba(34, 197, 94, 0.08);
-  border: 1px solid rgba(34, 197, 94, 0.2);
+  box-shadow: 0 6px 20px rgba(34, 197, 94, 0.15), 0 2px 8px rgba(34, 197, 94, 0.08), inset 0 1px 0 rgba(255,255,255,0.4);
+  border: 1px solid rgba(34, 197, 94, 0.25);
   font-weight: 600;
+  /* Paper texture effect */
+  background-image: radial-gradient(circle at 10% 20%, rgba(255,255,255,0.15) 0.1px, transparent 0.1px),
+                radial-gradient(circle at 90% 80%, rgba(255,255,255,0.15) 0.1px, transparent 0.1px);
+  background-size: 30px 30px;
 }
 .popups-root{ position: fixed; left: 50%; top: 24px; transform: translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:10px; z-index:1000 }
 
 .message-popup.notice {
-  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  background: linear-gradient(135deg, #eff6ff, #e0f2fe);
   color: #1e40af;
-  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.15), 0 2px 6px rgba(59, 130, 246, 0.08);
-  border: 1px solid rgba(59, 130, 246, 0.2);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.15), 0 2px 8px rgba(59, 130, 246, 0.08), inset 0 1px 0 rgba(255,255,255,0.4);
+  border: 1px solid rgba(59, 130, 246, 0.25);
   font-weight: 600;
+  /* Paper texture effect */
+  background-image: radial-gradient(circle at 10% 20%, rgba(255,255,255,0.15) 0.1px, transparent 0.1px),
+                radial-gradient(circle at 90% 80%, rgba(255,255,255,0.15) 0.1px, transparent 0.1px);
+  background-size: 30px 30px;
 }
 
 /* Lobby settings form tweaks to match existing UI */
