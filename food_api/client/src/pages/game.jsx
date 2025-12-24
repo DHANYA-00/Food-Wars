@@ -268,7 +268,7 @@ export default function Game() {
       const clean = String(ingredient || "").trim().toLowerCase();
       
       // Check if this ingredient has already been processed
-      const ingredientKey = `${pid}:${clean}:${roomId}:${Date.now()}`;
+      const ingredientKey = `${pid}:${clean}:${roomId}`;
       if (processedIngredientsRef.current.has(ingredientKey)) {
         return; // Skip if already processed
       }
@@ -300,7 +300,7 @@ export default function Game() {
           
           // avoid duplicate popups (e.g., double event/StrictMode)
           const rNow = round || 1;
-          const dedupeKey = `${pid}:${clean}:${rNow}:${count}:${Date.now()}`;
+          const dedupeKey = `${pid}:${clean}:${rNow}:${count}`;
           
           if (isMilestone) {
             // avoid duplicate milestone popups
@@ -313,7 +313,7 @@ export default function Game() {
             pushPopup(msg, "success", 2200, `milestone:${dedupeKey}`);
             spawnBalloons(); // milestone: only balloons + praise (no paper popup, no confetti)
           } else {
-            pushPopup(`You found "${ingredient}" +${points}`, "success", 2500, `found:${dedupeKey}`, { force: true });
+            pushPopup(`You found "${ingredient}" +${points}`, "you-found", 2500, `found:${dedupeKey}`, { force: true });
             shouldConfetti = true; // non-milestone: keep confetti with the standard popup
           }
           return next;
@@ -327,7 +327,7 @@ export default function Game() {
         setFoundByOthers(prev => Array.from(new Set([...prev, JSON.stringify({ ingredient: clean, name: player.name || 'Someone' })])));
         
         // avoid duplicate "found by others" popups
-        const dedupeKey = `${playerId}:${clean}:${round || 1}:${Date.now()}`;
+        const dedupeKey = `${playerId}:${clean}:${round || 1}`;
         pushPopup(`${player.name || 'Someone'} found "${ingredient}" +${points}`, "notice", 1400, `other:${dedupeKey}`);
         // notice: no sound (was removed)
       }
