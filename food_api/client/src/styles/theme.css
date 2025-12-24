@@ -73,9 +73,11 @@ body{
 .lobby-actions{display:flex;gap:10px;align-items:center;justify-content:center;margin-top:12px}
 
 /* Lobby enhancements */
-.lobby .card{ padding:14px 16px; border-radius:16px; position:relative; max-width: 720px; margin: 0 auto }
-.lobby .card h2{ margin:0 0 8px 0; font-size:20px; display:flex; align-items:center; gap:8px }
-.lobby .card h2:after{ content: ''; flex:1; height:1px; background: linear-gradient(90deg, rgba(0,0,0,0.04), rgba(0,0,0,0.01)); margin-left:12px }
+.lobby .card{ padding:14px 16px; border-radius:16px; position:relative; max-width: 720px; margin: 0 auto; display:flex; flex-direction:column; align-items:center }
+.lobby .card h2{ margin:0 0 8px 0; font-size:20px; display:flex; align-items:center; gap:8px; justify-content:center; text-align:center; width:100% }
+.lobby .card h2:before, .lobby .card h2:after{ content: ''; flex:1; height:1px; background: #e5e7eb; }
+.lobby .card h2:before{ margin-right:12px }
+.lobby .card h2:after{ margin-left:12px }
 .player-list{ margin-top:8px }
 .player-entry{ display:flex; gap:8px; align-items:center; padding:8px; background: linear-gradient(180deg, #ffffff, #fbfbff); border-radius:12px; box-shadow: 0 8px 18px rgba(12,20,40,0.04); }
 .player-entry .avatar{ width:40px; height:40px; border-radius:12px; object-fit:cover; border:2px solid rgba(255,255,255,0.6) }
@@ -86,20 +88,22 @@ body{
 .player-entry .host-badge{ background: linear-gradient(90deg,#fff7ed,#fff3d6); padding:4px 8px; border-radius:999px; font-weight:700; color:#b45309 }
 .player-entry .score{ color:#374151 }
 
-.lobby-settings{ display:flex; gap:16px; align-items:center; justify-content:start; margin-top:12px }
+.lobby-settings{ display:flex; gap:12px; align-items:center; justify-content:center; margin-top:12px; width:100%; max-width:360px; margin-left:auto; margin-right:auto }
 .lobby-settings .form-row{ display:flex; flex-direction:column; font-weight:600; color:var(--text) }
+.lobby-settings .form-row{ align-items:center; text-align:center }
 .lobby-settings .form-input{ padding:10px;border-radius:10px;border:1px solid rgba(0,0,0,0.06); width:120px }
 
-.lobby-actions{ display:flex; gap:10px; align-items:center; justify-content:flex-end; margin-top:12px }
+.lobby-actions{ display:flex; gap:10px; align-items:center; justify-content:center; margin-top:12px }
 .lobby-actions .btn{ min-width:96px }
 /* slightly smaller buttons within lobby to look shorter */
 .lobby .btn{ padding:8px 12px; font-size:14px }
+/* (reverted) keep default spacing below settings */
 
 /* subtle bg accent for lobby */
 .lobby .card::before{ content:''; position:absolute; right:-40px; top:-40px; width:140px; height:140px; background: radial-gradient(circle at 30% 30%, rgba(255,200,230,0.25), transparent 40%); border-radius:50%; pointer-events:none }
 
 /* Lobby: grid list for many players */
-.lobby .players{ position:relative }
+.lobby .players{ position:relative; width:100%; display:flex; flex-direction:column; align-items:center }
 .lobby .player-list{ display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:10px; max-height: 300px; overflow:auto; padding-right:4px; justify-items:center }
 .lobby .player-list.few{ display:flex; flex-direction:column; gap:10px; max-width: 100%; margin: 0; max-height:none; overflow:visible }
 .lobby .player-list.few .player-entry{ width:100%; flex-direction:row; align-items:center; justify-content:space-between; padding:10px }
@@ -111,9 +115,54 @@ body{
 .lobby .player-entry .name{ text-align:center }
 .lobby .player-entry .meta{ margin-top:2px }
 
+/* Compact square player tiles (avatar on top, name below) */
+.lobby .player-grid{ display:grid; grid-template-columns: repeat(auto-fill, 88px); gap:18px; align-items:start; justify-content:center; justify-items:center; padding-right:0; overflow:visible; max-height:none; margin: 0 auto }
+.lobby .player-tile-wrap{ display:flex; flex-direction:column; align-items:center; gap:6px }
+.lobby .player-tile{ width:88px; min-width:88px; height:88px; background:#fff; border:2px solid rgba(17,24,39,0.08); border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.02); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; padding:6px; position:relative }
+.lobby .player-tile .avatar{ width:42px; height:42px; border-radius:8px; object-fit:cover; border:2px solid rgba(255,255,255,0.7); box-shadow:0 2px 6px rgba(0,0,0,0.05) }
+.lobby .player-name{ width:100%; text-align:center; font-size:12px; font-weight:700; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.lobby .player-tile .name{ width:100%; margin-top:6px; text-align:center; font-size:12px; font-weight:700; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.lobby .player-tile .you{ font-weight:600; font-size:11px; color:#6b7280; margin-left:4px }
+.lobby .player-tile .host-badge{ position:absolute; top:6px; right:6px; font-size:9px; font-weight:700; color:#b45309; background: linear-gradient(90deg,#fff7ed,#fff3d6); padding:2px 6px; border-radius:999px }
+
+/* Auto-shrink tiles when many players */
+.lobby .player-grid.many{ grid-template-columns: repeat(auto-fill, 72px); gap:12px; overflow:visible; max-height:none; padding-right:0 }
+.lobby .player-grid.many .player-tile{ width:72px; min-width:72px; height:72px; padding:6px; flex-direction:column; justify-content:center }
+.lobby .player-grid.many .player-tile .avatar{ width:36px; height:36px; border-radius:8px }
+.lobby .player-grid.many .player-tile .name{ font-size:11px }
+.lobby .player-grid.many .player-tile .host-badge{ font-size:9px; padding:2px 5px }
+
+/* Reduce space below players section */
+.lobby .players{ margin-bottom:8px }
+.lobby .players h4{ margin:4px 0 8px 0; text-align:center }
+
+/* With few players, collapse empty columns and hug content to center */
+.lobby .player-grid.few{ grid-template-columns: repeat(auto-fill, 120px); gap:16px; width: auto; margin: 0 auto; justify-content:center }
+.lobby .player-grid.few .player-tile{ width:120px; min-width:120px; height:120px; flex-direction:column; justify-content:center; gap:8px; padding:10px }
+.lobby .player-grid.few .player-tile .avatar{ width:58px; height:58px; border-radius:10px }
+.lobby .player-grid.few .player-tile .name{ font-size:13px; text-align:center }
+.lobby .player-grid.few .player-name{ font-size:13px }
+
 @media (max-width:560px){
   .lobby .player-list.few{ display:flex; flex-direction:column; gap:10px; max-width: 100% }
   .lobby .player-list.few .player-entry{ width:100% }
+  .lobby .player-grid{ grid-template-columns: repeat(auto-fill, 80px); gap:12px; justify-content:center; overflow:visible; max-height:none }
+  .lobby .player-tile{ width:80px; min-width:80px; height:80px; padding:6px }
+  .lobby .player-tile .avatar{ width:38px; height:38px }
+}
+
+/* Exactly two players: force two columns side-by-side and center */
+.lobby .player-grid.two{ grid-template-columns: repeat(2, 120px); justify-content:center }
+@media (max-width:560px){
+  .lobby .player-grid.two{ grid-template-columns: repeat(2, 80px) }
+}
+
+/* More than 3 players: horizontal scroll for compactness */
+.lobby .player-grid.scroll{ grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 120px; gap: 14px; overflow-x: auto; overflow-y: hidden; white-space: nowrap; justify-content: flex-start; margin: 0 auto; padding-bottom: 6px }
+.lobby .player-grid.scroll::-webkit-scrollbar{ height: 8px }
+.lobby .player-grid.scroll::-webkit-scrollbar-thumb{ background: rgba(0,0,0,0.15); border-radius: 999px }
+@media (max-width:560px){
+  .lobby .player-grid.scroll{ grid-auto-columns: 88px; gap: 10px }
 }
 
 /* Game */
@@ -228,7 +277,9 @@ body.game-page .app-brand{ display:none !important }
 @media (max-width:420px){
   .title{font-size:28px}
   .btn{min-height:44px}
-  .choices{flex-wrap:wrap}
+  /* Keep Create and Join side-by-side on small phones */
+  .choices{ flex-wrap:nowrap; justify-content:space-between; gap:10px }
+  .choices .btn{ flex:1; min-width:0; padding:8px 12px }
   .card{padding:12px}
   .ingredient-chip{margin:4px 6px}
   .app-brand{display:none}

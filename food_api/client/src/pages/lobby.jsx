@@ -95,17 +95,24 @@ export default function Lobby() {
 
         <div className="players">
           <h4>Players ({players.length})</h4>
-          <ul className={`player-list ${players.length <= 4 ? 'few' : ''}`}>
+          <div className={`player-grid ${players.length >= 6 ? 'many' : ''} ${players.length <= 4 ? 'few' : ''} ${players.length === 2 ? 'two' : ''} ${players.length > 3 ? 'scroll' : ''}`}>
             {players.map((p, i) => (
-              <li key={p.playerId || p.socketId || i} className="player-entry">
-                <img src={p.avatar || getAvatarUrl(p.playerId || p.name, 48)} onError={(e) => { e.currentTarget.src = createFallbackAvatar(p.name,48); }} alt={p.name} className="avatar" />
-                <div className="player-info">
-                  <div className="name">{p.name} {p.playerId === playerId ? <span className="you">(You)</span> : null}</div>
-                  <div className="meta">{p.playerId === hostPlayerId ? <span className="host-badge">Host ⭐</span> : null}</div>
+              <div key={p.playerId || p.socketId || i} className="player-tile-wrap" title={p.name}>
+                <div className="player-tile">
+                  <img
+                    src={p.avatar || getAvatarUrl(p.playerId || p.name, 48)}
+                    onError={(e) => { e.currentTarget.src = createFallbackAvatar(p.name,48); }}
+                    alt={p.name}
+                    className="avatar"
+                  />
+                  <div className="name">
+                    {p.name} {p.playerId === playerId ? <span className="you">(You)</span> : null}
+                  </div>
+                  {p.playerId === hostPlayerId ? <div className="host-badge">Host ⭐</div> : null}
                 </div>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
 
         <div className="form lobby-settings">

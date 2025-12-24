@@ -9,6 +9,8 @@
 }
 
 .game-header { display:flex; gap:16px; align-items:center; justify-content:space-between; }
+.game-head{ position: sticky; top: 0; z-index: 20; background: #fff; padding: 8px 0; border-bottom: 1px solid rgba(17,24,39,0.06) }
+.page.game .card{ position: relative }
 .dish-image { width:320px; height:220px; object-fit:cover; border-radius:10px; }
 .game-body { display:flex; gap:18px; margin-top:18px; }
 .dish-panel { flex: 1; text-align:center; }
@@ -19,9 +21,7 @@
 .guess-box button { padding:10px 14px; }
 
 .message-popup {
-  position: fixed;
-  right: 24px;
-  top: 100px;
+  position: relative;
   background: rgba(17,24,39,0.95);
   color: white;
   padding: 10px 14px;
@@ -31,7 +31,7 @@
 }
 
 .message-popup.success{ background: linear-gradient(90deg,#2ecc71,#16a34a); box-shadow:0 12px 28px rgba(22,163,74,0.18); }
-.popups-root{ position: fixed; right: 24px; top: 24px; display:flex; flex-direction:column; gap:10px; z-index:1000 }
+.popups-root{ position: fixed; left: 50%; top: 24px; transform: translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:10px; z-index:1000 }
 
 .message-popup.notice{ background: linear-gradient(90deg,#f0f6ff,#eef2ff); color:var(--text); box-shadow: 0 8px 20px rgba(15,23,42,0.04); border: 1px solid rgba(15,23,42,0.04) }
 
@@ -47,6 +47,16 @@
   0%{ transform: translateY(-10vh) rotate(0deg); opacity:1 }
   60%{ opacity:1 }
   100%{ transform: translateY(120vh) rotate(360deg); opacity:0 }
+}
+
+/* Balloons overlay inside the game card */
+.page.game .card{ position:relative }
+.balloons-root{ position:absolute; left:0; right:0; top:0; bottom:0; pointer-events:none; overflow:hidden; z-index:1050; display:block }
+.balloon{ position:absolute; bottom:-10vh; width:18px; height:24px; border-radius:10px 10px 12px 12px; opacity:0.9; animation-name:balloonRise; animation-timing-function: ease-in; box-shadow: 0 6px 14px rgba(0,0,0,0.08) }
+@keyframes balloonRise{
+  0%{ transform: translateY(10vh) scale(0.9); opacity:0.9 }
+  60%{ opacity:1 }
+  100%{ transform: translateY(-120vh) scale(1.05); opacity:0 }
 }
 
 /* Meta (rounds + timer) styling */
@@ -96,7 +106,7 @@
 @media (max-width:560px){
   .game-body{ flex-direction:column }
   .dish-image{ width:100%; height:auto }
-  .popups-root{ right: 12px; top: 12px }
+  .popups-root{ left: 50%; top: 12px; transform: translateX(-50%) }
   .message-popup{ right: 12px; top: auto; bottom: 16px; max-width: calc(100% - 24px) }
   .chat-messages{ max-height: 200px }
   .guess-box{ flex-direction:column }
