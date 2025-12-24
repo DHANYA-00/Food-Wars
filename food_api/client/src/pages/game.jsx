@@ -48,6 +48,9 @@ export default function Game() {
   const chatRef = useRef(null);
   const [isDisconnected, setIsDisconnected] = useState(false);
   const [hostPlayerId, setHostPlayerId] = useState(null);
+  
+  // Ref to track processed ingredients to avoid duplicates
+  const processedIngredientsRef = useRef(new Set());
 
   // ---- Score persistence helpers (per-room) ----
   const SCORE_KEY = `fw_scores_${roomId}`;
@@ -250,6 +253,7 @@ export default function Game() {
 
     // keep listener cleanup in same effect
 
+    
     socket.on("ingredientResult", (res) => {
       // payload: { ingredient, playerId: pid, correct, points, players }
       const { ingredient, playerId: pid, correct, points, players: updated } = res || {};
@@ -261,6 +265,13 @@ export default function Game() {
       if (!correct) return;
 
       const clean = String(ingredient || "").trim().toLowerCase();
+      
+      // Check if this ingredient has already been processed
+      const ingredientKey = `${pid}:${clean}:${roomId}`;
+      if (processedIngredientsRef.current.has(ingredientKey)) {
+        return; // Skip if already processed
+      }
+      processedIngredientsRef.current.add(ingredientKey);
 
       // remove from remaining
       setRemainingIngredients(prev => prev.filter(i => i !== clean));
@@ -329,6 +340,8 @@ export default function Game() {
       socket.off('connect', onConnect);
       socket.off('disconnect', onDisconnect);
       socket.off('connect_error', onConnectError);
+      // Clear the processed ingredients ref
+      processedIngredientsRef.current.clear();
       try { document.body.classList.remove('game-page'); } catch {}
     };
   }, [roomId, navigate, playerId, name]);
