@@ -254,7 +254,8 @@ export default function Game() {
     // keep listener cleanup in same effect
 
     
-    socket.on("ingredientResult", (res) => {
+    // Track socket event listeners to prevent duplicate registration
+    const ingredientResultHandler = (res) => {
       // payload: { ingredient, playerId: pid, correct, points, players }
       const { ingredient, playerId: pid, correct, points, players: updated } = res || {};
       // persist latest scores from server
@@ -267,11 +268,21 @@ export default function Game() {
       const clean = String(ingredient || "").trim().toLowerCase();
       
       // Check if this ingredient has already been processed
-      const ingredientKey = `${pid}:${clean}:${roomId}`;
+      const ingredientKey = `${pid}:${clean}:${roomId}:${Date.now()}`;
       if (processedIngredientsRef.current.has(ingredientKey)) {
         return; // Skip if already processed
       }
+      // Add current ingredient to processed set
       processedIngredientsRef.current.add(ingredientKey);
+      
+      // Clean up old entries periodically to prevent memory leaks
+      if (processedIngredientsRef.current.size > 100) {
+        // Keep only recent entries
+        const entries = Array.from(processedIngredientsRef.current);
+        const recentEntries = entries.slice(-50); // Keep last 50 entries
+        processedIngredientsRef.current = new Set(recentEntries);
+        processedIngredientsRef.current.add(ingredientKey);
+      }
 
       // remove from remaining
       setRemainingIngredients(prev => prev.filter(i => i !== clean));
@@ -289,7 +300,7 @@ export default function Game() {
           
           // avoid duplicate popups (e.g., double event/StrictMode)
           const rNow = round || 1;
-          const dedupeKey = `${pid}:${clean}:${rNow}:${count}`;
+          const dedupeKey = `${pid}:${clean}:${rNow}:${count}:${Date.now()}`;
           
           if (isMilestone) {
             // avoid duplicate milestone popups
@@ -316,11 +327,13 @@ export default function Game() {
         setFoundByOthers(prev => Array.from(new Set([...prev, JSON.stringify({ ingredient: clean, name: player.name || 'Someone' })])));
         
         // avoid duplicate "found by others" popups
-        const dedupeKey = `${playerId}:${clean}:${round || 1}`;
+        const dedupeKey = `${playerId}:${clean}:${round || 1}:${Date.now()}`;
         pushPopup(`${player.name || 'Someone'} found "${ingredient}" +${points}`, "notice", 1400, `other:${dedupeKey}`);
         // notice: no sound (was removed)
       }
-    });
+    };
+    
+    socket.on("ingredientResult", ingredientResultHandler);
 
 
 
@@ -330,7 +343,7 @@ export default function Game() {
 
     return () => {
       socket.off("gameState");
-      socket.off("ingredientResult");
+      socket.off("ingredientResult", ingredientResultHandler);
       socket.off("timerUpdate");
       socket.off("roundOver");
       socket.off("gameOver");
