@@ -89,8 +89,7 @@ body{
 .player-entry .score{ color:#374151 }
 
 .lobby-settings{ display:flex; gap:12px; align-items:center; justify-content:center; margin-top:12px; width:100%; max-width:360px; margin-left:auto; margin-right:auto }
-.lobby-settings .form-row{ display:flex; flex-direction:column; font-weight:600; color:var(--text) }
-.lobby-settings .form-row{ align-items:center; text-align:center }
+.lobby-settings .form-row{ display:flex; flex-direction:column; font-weight:600; color:var(--text); align-items:flex-start; text-align:left; gap:4px; }
 .lobby-settings .form-input{ padding:10px;border-radius:10px;border:1px solid rgba(0,0,0,0.06); width:120px }
 
 .lobby-actions{ display:flex; gap:10px; align-items:center; justify-content:center; margin-top:12px }
