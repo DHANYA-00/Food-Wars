@@ -158,9 +158,18 @@ function setupSocket(server) {
           return callback?.({ ok: false, message: "No dishes in DB" });
         }
 
+        // ensure we do not repeat dishes within the same game session
         const available = dishes.filter(d => !room.usedDishes.includes(d._id.toString()));
-        const pool = available.length ? available : dishes;
-        const picked = pool[Math.floor(Math.random() * pool.length)];
+        // if no unique dishes remain, finish the game gracefully instead of repeating
+        if (available.length === 0) {
+          io.to(roomId).emit("gameOver", { players: room.players });
+          return callback?.({ ok: true, finished: true, reason: "no-more-unique-dishes" });
+        }
+        // also cap totalRounds to number of dishes to avoid repeats
+        if ((room.totalRounds || 0) > dishes.length) {
+          room.totalRounds = dishes.length;
+        }
+        const picked = available[Math.floor(Math.random() * available.length)];
 
         room.usedDishes.push(picked._id.toString());
         // persist current dish for late-joining clients
@@ -315,25 +324,23 @@ function setupSocket(server) {
           return;
         }
 
-        // remove by socketId
-        rooms[rid].players = rooms[rid].players.filter(p => p.socketId !== socket.id);
+        const room = rooms[rid];
 
-        // if host's playerId left, reassign host to first player
-        if (rooms[rid].hostPlayerId === pid) {
-          const newHost = rooms[rid].players[0];
-          if (newHost) {
-            rooms[rid].hostPlayerId = newHost.playerId;
-            rooms[rid].hostSocketId = newHost.socketId;
-            console.log(`🔹 Host changed for ${rid} → ${newHost.name} (${newHost.playerId})`);
-          } else {
-            delete rooms[rid];
-            console.log("🗑️ Room deleted (empty):", rid);
-            return;
-          }
+        // mark player as disconnected but DO NOT remove or reset host/score
+        const player = room.players.find(p => p.socketId === socket.id || p.playerId === pid);
+        if (player) {
+          player.socketId = null;
         }
 
-        io.to(rid).emit("roomUpdate", { players: rooms[rid].players, hostPlayerId: rooms[rid].hostPlayerId });
-        console.log(`🔌 Player disconnected socket=${socket.id} playerId=${pid} from room=${rid}`);
+        // Keep existing host assignment. Only delete room if it truly has no players entries.
+        if (!room.players || room.players.length === 0) {
+          delete rooms[rid];
+          console.log("🗑️ Room deleted (empty):", rid);
+          return;
+        }
+
+        io.to(rid).emit("roomUpdate", { players: room.players, hostPlayerId: room.hostPlayerId });
+        console.log(`🔌 Player disconnected (preserved) socket=${socket.id} playerId=${pid} from room=${rid}`);
       } catch (err) {
         console.error("❌ disconnect handler error:", err);
       }
