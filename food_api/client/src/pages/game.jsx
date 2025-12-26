@@ -63,7 +63,9 @@ export default function Game() {
     const now = Date.now();
     const last = lastPopupRef.current || {};
     const key = dedupeKey || `${type}::${message}`;
-    if (!options.force && last.msg === key && now - (last.ts || 0) < 400) return; // shorter debounce to avoid hiding valid odd popups
+    // Always check for duplicates, even with force option - use longer window for "You found" messages
+    const debounceWindow = type === 'you-found' ? 1500 : 400;
+    if (last.msg === key && now - (last.ts || 0) < debounceWindow) return;
     const id = now + Math.random();
     setPopups(p => [...p, { id, message, type }]);
     setTimeout(() => setPopups(p => p.filter(x => x.id !== id)), duration);
@@ -313,7 +315,7 @@ export default function Game() {
             pushPopup(msg, "success", 2200, `milestone:${dedupeKey}`);
             spawnBalloons(); // milestone: only balloons + praise (no paper popup, no confetti)
           } else {
-            pushPopup(`You found "${ingredient}" +${points}`, "you-found", 2500, `found:${dedupeKey}`, { force: true });
+            pushPopup(`You found "${ingredient}" +${points}`, "you-found", 2500, `found:${dedupeKey}`);
             shouldConfetti = true; // non-milestone: keep confetti with the standard popup
           }
           return next;
