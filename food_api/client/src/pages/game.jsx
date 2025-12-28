@@ -1,22 +1,22 @@
-    // network lifecycle
-    const onConnect = () => setIsDisconnected(false);
-    const onDisconnect = () => setIsDisconnected(true);
-    const onConnectError = () => setIsDisconnected(true);
-    socket.on('connect', onConnect);
-    socket.on('disconnect', onDisconnect);
-    socket.on('connect_error', onConnectError);
-    try { socket.io.on?.('reconnect_attempt', () => setIsDisconnected(true)); } catch {}
-
-// Hidden audio element for background music (expects /bg-music.mp3 in public)
-// Note: render inside component tree so ref works
-// This will be mounted in the top-level return above via a portal-like approach is not needed; include just below card.
-
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { socket } from "../socket.js";
 import "../styles/theme.css";
 import "../styles/game.css";
 import { getAvatarUrl, createFallbackAvatar } from "../utils/avatar.js";
+
+// network lifecycle
+const onConnect = () => setIsDisconnected(false);
+const onDisconnect = () => setIsDisconnected(true);
+const onConnectError = () => setIsDisconnected(true);
+socket.on('connect', onConnect);
+socket.on('disconnect', onDisconnect);
+socket.on('connect_error', onConnectError);
+try { socket.io.on?.('reconnect_attempt', () => setIsDisconnected(true)); } catch {}
+
+// Hidden audio element for background music (expects /bg-music.mp3 in public)
+// Note: render inside component tree so ref works
+// This will be mounted in the top-level return above via a portal-like approach is not needed; include just below card.
 
 export default function Game() {
   const { roomId } = useParams();
