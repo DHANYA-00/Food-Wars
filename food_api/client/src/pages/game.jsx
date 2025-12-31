@@ -63,8 +63,8 @@ export default function Game() {
     const now = Date.now();
     const last = lastPopupRef.current || {};
     const key = dedupeKey || `${type}::${message}`;
-    // Always check for duplicates, even with force option - use longer window for "You found" messages
-    const debounceWindow = type === 'you-found' ? 1500 : 400;
+    // Reduced debounce window for faster response
+    const debounceWindow = type === 'you-found' ? 300 : 400;
     if (last.msg === key && now - (last.ts || 0) < debounceWindow) return;
     const id = now + Math.random();
     setPopups(p => [...p, { id, message, type }]);
@@ -365,6 +365,32 @@ export default function Game() {
   // ===== SUBMIT =====
   const submit = () => {
     if (!guess.trim() || timer === 0) return;
+    
+    const guessLower = guess.trim().toLowerCase();
+    
+    // Check if ingredient was already found by this player
+    if (foundByMe.includes(guessLower)) {
+      pushPopup(`Already found "${guess.trim()}"`, "already-found", 1500, `already:${guessLower}`);
+      setGuess("");
+      return;
+    }
+    
+    // Check if ingredient was already found by other players
+    const foundByOthersIngredients = foundByOthers.map(s => {
+      try {
+        const parsed = JSON.parse(s);
+        return parsed.ingredient;
+      } catch {
+        return s;
+      }
+    });
+    
+    if (foundByOthersIngredients.includes(guessLower)) {
+      pushPopup(`Already found "${guess.trim()}"`, "already-found", 1500, `already:${guessLower}`);
+      setGuess("");
+      return;
+    }
+    
     socket.emit("submitIngredient", { roomId, playerId, ingredient: guess.trim() });
     setGuess("");
   };

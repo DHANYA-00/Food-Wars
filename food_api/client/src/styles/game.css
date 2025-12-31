@@ -72,6 +72,20 @@
   animation: popupFloat 0.4s ease-out;
 }
 
+/* Specific style for "Already found" messages */
+.message-popup.already-found {
+  background: linear-gradient(135deg, #fee2e2, #fecaca);
+  color: #991b1b;
+  box-shadow: 0 6px 20px rgba(220, 38, 38, 0.15), 0 2px 8px rgba(220, 38, 38, 0.08), inset 0 1px 0 rgba(255,255,255,0.4);
+  border: 1px solid rgba(220, 38, 38, 0.25);
+  font-weight: 600;
+  /* Paper texture effect */
+  background-image: radial-gradient(circle at 10% 20%, rgba(255,255,255,0.15) 0.1px, transparent 0.1px),
+                radial-gradient(circle at 90% 80%, rgba(255,255,255,0.15) 0.1px, transparent 0.1px);
+  background-size: 30px 30px;
+  animation: popupFloat 0.4s ease-out;
+}
+
 
 .popups-root{ position: fixed; left: 50%; top: 24px; transform: translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:10px; z-index:1000 }
 
