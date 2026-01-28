@@ -5,14 +5,7 @@ import "../styles/theme.css";
 import "../styles/game.css";
 import { getAvatarUrl, createFallbackAvatar } from "../utils/avatar.js";
 
-// network lifecycle
-const onConnect = () => setIsDisconnected(false);
-const onDisconnect = () => setIsDisconnected(true);
-const onConnectError = () => setIsDisconnected(true);
-socket.on('connect', onConnect);
-socket.on('disconnect', onDisconnect);
-socket.on('connect_error', onConnectError);
-try { socket.io.on?.('reconnect_attempt', () => setIsDisconnected(true)); } catch {}
+ 
 
 // Hidden audio element for background music (expects /bg-music.mp3 in public)
 // Note: render inside component tree so ref works
@@ -175,6 +168,15 @@ export default function Game() {
     socket.emit("requestRoomState", { roomId }, (res) => {
       if (!res?.ok) console.debug("requestRoomState ack:", res);
     });
+
+    // Register network lifecycle now that setIsDisconnected exists
+    const handleConnect = () => setIsDisconnected(false);
+    const handleDisconnect = () => setIsDisconnected(true);
+    const handleConnectError = () => setIsDisconnected(true);
+    socket.on('connect', handleConnect);
+    socket.on('disconnect', handleDisconnect);
+    socket.on('connect_error', handleConnectError);
+    try { socket.io.on?.('reconnect_attempt', () => setIsDisconnected(true)); } catch {}
 
     // MAIN GAME STATE UPDATE (some events come from server under different names)
     socket.on("gameState", (data) => {
@@ -359,9 +361,9 @@ export default function Game() {
       socket.off("gameStarted");
       socket.off("roomUpdate");
       socket.off("chatMessage");
-      socket.off('connect', onConnect);
-      socket.off('disconnect', onDisconnect);
-      socket.off('connect_error', onConnectError);
+      socket.off('connect', handleConnect);
+      socket.off('disconnect', handleDisconnect);
+      socket.off('connect_error', handleConnectError);
       // Clear the processed ingredients ref
       processedIngredientsRef.current.clear();
       try { document.body.classList.remove('game-page'); } catch {}
