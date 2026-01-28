@@ -11,7 +11,7 @@
 .game-header { display:flex; gap:16px; align-items:center; justify-content:space-between; }
 .game-head{ position: sticky; top: 0; z-index: 20; background: #fff; padding: 8px 0; border-bottom: 1px solid rgba(17,24,39,0.06) }
 .page.game .card{ position: relative }
-.dish-image { width:320px; height:220px; object-fit:cover; border-radius:10px; }
+.dish-image { width:100%; height:auto; max-height: 420px; object-fit:contain; border-radius:10px; }
 .game-body { display:flex; gap:18px; margin-top:18px; }
 .dish-panel { flex: 1; text-align:center; }
 .play-panel { flex: 1; display:flex; flex-direction:column; gap:12px; }
@@ -19,6 +19,14 @@
 .guess-box { display:flex; gap:8px; }
 .guess-box input { flex:1; padding:10px; }
 .guess-box button { padding:10px 14px; }
+
+/* Game page two-column layout */
+.game-flex{ display:flex; gap:18px; align-items:flex-start; }
+.dish-area{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; text-align:center }
+.dish-placeholder{ width:100%; max-width:100%; height:auto; min-height:200px; display:flex; align-items:center; justify-content:center; border-radius:12px; background:#f9fafb; color:#6b7280; font-weight:600; margin:0 auto }
+
+/* Ensure the dish image is centered and does not overflow */
+.dish-img{ display:block; margin:0 auto; width:100%; height:auto; border-radius:12px; object-fit:contain; max-height: min(60vh, 640px) }
 
 .message-popup {
   position: relative;
@@ -134,7 +142,6 @@
 .meta .timer{ color:#6b6b6b; font-weight:600 }
 
 .dish-area h3{ margin-top:10px; font-size:20px; color:var(--text) }
-.dish-img{ display:block; margin:0 auto }
 
 /* Ingredient chips and groups */
 .ingredients-box{ margin-top:14px; display:flex; flex-direction:column; gap:8px }
@@ -171,13 +178,18 @@
 /* Responsive tweaks */
 @media (max-width:560px){
   .game-body{ flex-direction:column }
-  .dish-image{ width:100%; height:auto }
+  .dish-image{ width:100%; height:auto; max-height: 42svh; object-fit:contain }
   .popups-root{ left: 50%; top: 12px; transform: translateX(-50%) }
   .message-popup{ right: 12px; top: auto; bottom: 16px; max-width: calc(100% - 24px) }
   .chat-messages{ max-height: 200px }
   .guess-box{ flex-direction:column }
   .guess-box button{ width:100% }
   .lobby-settings{ gap:10px }
+}
+
+@media (max-width: 900px){
+  .game-flex{ flex-direction:column }
+  .dish-img, .dish-placeholder{ max-width:100% }
 }
 
 @media (max-width:420px){

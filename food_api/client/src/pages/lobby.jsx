@@ -29,18 +29,19 @@ export default function Lobby() {
   useEffect(() => {
     if (!socket.connected) socket.connect();
 
-    if (initialIsHost) {
-      socket.emit("createRoom", { roomId, name, totalRounds: rounds, playerId, timePerRound, avatar: selectedAvatar }, (res) => {
-        if (!res.ok) console.warn("createRoom failed", res?.message);
-      });
-    } else {
+    // Always ensure we are in the room (host or not)
+    try {
       socket.emit("joinRoom", { roomId, name, playerId, avatar: selectedAvatar }, (res) => {
-        if (!res.ok) console.warn("joinRoom failed", res?.message);
+        if (!res?.ok) console.warn("joinRoom failed", res?.message);
       });
-    }
+      // Ask for the latest room snapshot to populate players
+      socket.emit("requestRoomState", { roomId }, (res) => {
+        if (!res?.ok) console.debug("requestRoomState ack:", res);
+      });
+    } catch {}
 
-    const onRoomUpdate = ({ players: updated = [], hostPlayerId: hostId, totalRounds: tr, timePerRound: tpr }) => {
-      setPlayers(updated);
+    const onRoomUpdate = ({ players: updated, hostPlayerId: hostId, totalRounds: tr, timePerRound: tpr }) => {
+      if (Array.isArray(updated)) setPlayers(updated);
       setHostPlayerId(hostId);
       if (typeof tr !== 'undefined') setLocalRounds(tr);
       if (typeof tpr !== 'undefined') setLocalTimePerRound(tpr);
@@ -61,9 +62,19 @@ export default function Lobby() {
     socket.on("roomUpdate", onRoomUpdate);
     socket.on("gameStarted", onGameStarted);
 
+    // On reconnect, re-join and request snapshot to recover state
+    const onConnect = () => {
+      try {
+        socket.emit("joinRoom", { roomId, name, playerId, avatar: selectedAvatar }, () => {});
+        socket.emit("requestRoomState", { roomId }, () => {});
+      } catch {}
+    };
+    socket.on("connect", onConnect);
+
     return () => {
       socket.off("roomUpdate", onRoomUpdate);
       socket.off("gameStarted", onGameStarted);
+      socket.off("connect", onConnect);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomId]);
@@ -91,7 +102,7 @@ export default function Lobby() {
   return (
     <div className="page lobby">
       <div className="card">
-        <h2>🍲 Room Code: {roomId}</h2>
+        <h2>🍜 Room Code: {roomId}</h2>
 
         <div className="players">
           <h4>Players ({players.length})</h4>

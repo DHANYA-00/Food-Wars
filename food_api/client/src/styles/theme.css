@@ -24,6 +24,195 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 
+/* Dark Minimal / Neo-Minimal theme (toggle with body.theme-minimal) */
+body.theme-minimal{
+  --bg: radial-gradient(1200px 800px at 50% -10%, #141416 0%, #0e0e10 40%, #0a0a0c 100%);
+  --card: rgba(22,22,24,0.9);
+  --accent: #22d3ee; /* single accent: cyan */
+  --mint: #1f1f23; /* repurpose chips to neutral dark */
+  --lavender: #2a2a2e;
+  --text: #e5e7eb;
+  --shadow: 0 14px 34px rgba(0,0,0,0.5);
+  font-family: "Inter", "SF Pro Text", system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  background: var(--bg);
+  animation: none;
+  color: var(--text);
+}
+
+/* Dashboard emphasis under minimal theme */
+body.theme-minimal .card{
+  background: linear-gradient(180deg, rgba(26,26,28,0.96), rgba(20,20,22,0.94));
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.55);
+  transition: box-shadow 200ms ease, transform 200ms ease;
+}
+body.theme-minimal .card:hover{
+  box-shadow: 0 18px 44px rgba(0,0,0,0.6);
+  transform: translateY(-2px);
+}
+body.theme-minimal .title{
+  color: var(--text);
+  letter-spacing: 0.2px;
+  font-weight: 800;
+}
+body.theme-minimal .btn{
+  background: linear-gradient(180deg, #1f2937, #111827);
+  color: #e5e7eb;
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.35);
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+body.theme-minimal .btn.primary{
+  background: linear-gradient(180deg, #06b6d4, #0891b2);
+  color: #071317;
+  border: 1px solid rgba(34,211,238,0.6);
+}
+body.theme-minimal .btn.secondary{
+  background: linear-gradient(180deg, #202329, #13161a);
+  color: #e5e7eb;
+}
+body.theme-minimal .btn:not(:disabled):hover,
+body.theme-minimal .btn:not(:disabled):focus{
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 16px 38px rgba(0,0,0,0.5);
+  border-color: rgba(34,211,238,0.35);
+}
+body.theme-minimal .form input{
+  background: rgba(255,255,255,0.04);
+  color: var(--text);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+body.theme-minimal .avatar{ border-color: rgba(255,255,255,0.18); }
+/* subtle accent underline on title */
+/* Underline the textual brand name even when a logo image precedes it */
+body.theme-minimal .title .brand-name{ position:relative }
+body.theme-minimal .title .brand-name::after{
+  content:""; position:absolute; left:0; right:0; bottom:-6px; height:2px; background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity:0.5;
+  transform-origin: center; transform: scaleX(0.9);
+}
+
+/* Dashboard landing (no form): compact banner + circular logo block */
+.page.dashboard .card:not(.dashboard-form){
+  max-width: 860px;
+  padding: 18px 22px 22px;
+  border-radius: 16px;
+}
+.page.dashboard .logo-circle{
+  width:64px; height:64px; margin: 6px auto 6px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  background: radial-gradient(60% 60% at 50% 40%, rgba(34,211,238,0.18), rgba(0,0,0,0.4));
+  box-shadow: 0 14px 28px rgba(0,0,0,0.45), 0 0 32px rgba(34,211,238,0.18);
+  /* Circular accent border matching the Create button color */
+  border: 2px solid rgba(6,182,212,0.55);
+}
+.page.dashboard .logo-circle .brand-logo{
+  height:32px;
+  /* Strong cyan tint to match Create button (#06b6d4 -> #0891b2) */
+  filter:
+    hue-rotate(165deg)
+    saturate(3)
+    brightness(1.2)
+    contrast(1.06)
+    drop-shadow(0 0 10px rgba(6,182,212,0.28));
+}
+.page.dashboard .choices{ gap:12px; margin-top:10px }
+
+/* Shared components across pages under minimal theme */
+body.theme-minimal .players-box,
+body.theme-minimal .chat-box,
+body.theme-minimal .player-list li,
+body.theme-minimal .score-card,
+body.theme-minimal .lobby .player-tile{
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+}
+body.theme-minimal .chat-message{
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+body.theme-minimal .chat-message.me{ background: linear-gradient(180deg, rgba(34,211,238,0.18), rgba(8,145,178,0.14)) }
+body.theme-minimal .chat-message.other{ background: rgba(255,255,255,0.05) }
+body.theme-minimal .ingredient-chip{ background: rgba(255,255,255,0.06); color: var(--text); border:none }
+body.theme-minimal .ingredient-chip.found-me{ background: rgba(34,211,238,0.18); color:#d9fbff }
+body.theme-minimal .ingredient-chip.found-other{ background: rgba(255,255,255,0.08) }
+body.theme-minimal .ingredient-chip.remaining{ background: rgba(239,68,68,0.18) }
+
+/* Remove legacy pink accent glow on Lobby card */
+body.theme-minimal .lobby .card::before{ background: none !important; display: none !important; content: none !important; }
+
+/* Game header (dish name + rounds/timer) under minimal theme */
+body.theme-minimal .game-head{
+  background: linear-gradient(180deg, #1f2024, #18191d) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+}
+body.theme-minimal .game-head .dish-title{
+  color: var(--text) !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.2px;
+}
+body.theme-minimal .meta{ color: #d1d5db !important; }
+body.theme-minimal .meta .rounds{ color:#cbd5e1 !important; opacity:0.9 }
+body.theme-minimal .meta .timer{ color: var(--accent) !important; font-weight: 700 }
+
+/* Message popups themed for minimal */
+body.theme-minimal .message-popup{
+  background: rgba(255,255,255,0.04) !important;
+  color: var(--text) !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.45) !important;
+}
+body.theme-minimal .message-popup.success{
+  background: linear-gradient(180deg, rgba(34,211,238,0.22), rgba(8,145,178,0.18)) !important;
+  color: #e6fdff !important;
+  border-color: rgba(34,211,238,0.35) !important;
+}
+body.theme-minimal .message-popup.you-found{
+  background: linear-gradient(180deg, rgba(34,211,238,0.28), rgba(8,145,178,0.22)) !important;
+  color: #071317 !important;
+  border-color: rgba(34,211,238,0.45) !important;
+}
+body.theme-minimal .message-popup.already-found{
+  background: linear-gradient(180deg, rgba(239,68,68,0.22), rgba(127,29,29,0.18)) !important;
+  color: #fee2e2 !important;
+  border-color: rgba(239,68,68,0.35) !important;
+}
+body.theme-minimal .message-popup.notice{
+  background: linear-gradient(180deg, rgba(180,190,210,0.16), rgba(148,163,184,0.12)) !important;
+  color: #e5e7eb !important;
+  border-color: rgba(148,163,184,0.3) !important;
+}
+
+/* Game: players list items styled dark */
+body.theme-minimal .players-box li{
+  background: rgba(255,255,255,0.03) !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.35) !important;
+}
+body.theme-minimal .players-box h4{ color:#e5e7eb }
+
+/* Game: chat header and controls */
+body.theme-minimal .chat-box{ background: rgba(255,255,255,0.03) !important; border-color: rgba(255,255,255,0.08) !important }
+body.theme-minimal .chat-box .chat-head h4{ color:#e5e7eb }
+body.theme-minimal .icon-btn{ color:#cbd5e1 }
+body.theme-minimal .icon-btn:hover,
+body.theme-minimal .icon-btn:focus{
+  background: rgba(255,255,255,0.06);
+  color: #e5e7eb;
+  outline: 2px solid rgba(34,211,238,0.25);
+  outline-offset: 2px;
+}
+body.theme-minimal .icon-btn{ transition: background 160ms ease, color 160ms ease, outline-color 160ms ease }
+
+/* Game: inputs in chat and guess rows */
+body.theme-minimal .chat-input-row input,
+body.theme-minimal .guess-box input{
+  background: rgba(255,255,255,0.04) !important;
+  color: #e5e7eb !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+}
+
 @keyframes pastelMove{
   0%{background-position:0% 50%}
   50%{background-position:100% 50%}
@@ -48,10 +237,45 @@ body{
   overflow: visible;
 }
 
+html{ -webkit-text-size-adjust: 100%; }
+html, body{ overscroll-behavior-y: contain; }
+input, select, textarea, button{ font-size: 16px; }
+@media (hover: none) and (pointer: coarse){
+  .btn{ min-height: 44px; padding: 12px 16px; }
+}
+
 /* Dashboard */
 .title{font-size:36px;margin:0 0 10px 0}
 .choices{display:flex;gap:14px;justify-content:center;margin:18px 0}
-.btn{padding:10px 16px;border-radius:12px;border: none;background: linear-gradient(90deg,var(--accent),#ffa7d9); color:white; cursor:pointer; box-shadow: 0 10px 24px rgba(255,136,194,0.18); font-weight:600}
+.brand-logo{ height:42px; width:auto; display:inline-block; object-fit:contain }
+.brand-logo.small{ height:24px }
+/* Dark Minimal: add cyan accent glow + micro-animations */
+body.theme-minimal .brand-logo{
+  /* Slightly tint toward the accent and add glow for dark minimal */
+  filter:
+    hue-rotate(165deg) saturate(1.25) brightness(1.05)
+    drop-shadow(0 2px 8px rgba(0,0,0,0.55))
+    drop-shadow(0 0 10px rgba(34,211,238,0.25))
+    drop-shadow(0 0 24px rgba(34,211,238,0.18));
+  transition: transform 180ms ease, filter 180ms ease, opacity 180ms ease;
+  will-change: transform, filter;
+}
+body.theme-minimal .brand-logo:hover,
+body.theme-minimal .brand-logo:focus{
+  transform: translateY(-1px) scale(1.02);
+  filter:
+    drop-shadow(0 3px 10px rgba(0,0,0,0.6))
+    drop-shadow(0 0 12px rgba(34,211,238,0.35))
+    drop-shadow(0 0 28px rgba(34,211,238,0.22));
+}
+/* Smaller header icon variant */
+body.theme-minimal .brand-logo.small{
+  filter:
+    hue-rotate(165deg) saturate(1.25) brightness(1.05)
+    drop-shadow(0 1px 5px rgba(0,0,0,0.5))
+    drop-shadow(0 0 8px rgba(34,211,238,0.22));
+}
+.btn{padding:10px 16px;border-radius:12px;border: none;background: linear-gradient(90deg,var(--accent),#ffa7d9); color:white; cursor:pointer; box-shadow: 0 10px 24px rgba(255,136,194,0.18); font-weight:600; transition: transform 150ms ease, box-shadow 150ms ease, filter 150ms ease; will-change: transform, box-shadow; -webkit-tap-highlight-color: transparent; touch-action: manipulation}
 .btn.primary{background: linear-gradient(90deg,var(--accent),#ffa7d9); color:white; box-shadow: 0 10px 24px rgba(255,136,194,0.18)}
 /* Default secondary: soft slate to match pastel UI */
 .btn.secondary{background: linear-gradient(90deg,var(--accent),#ffa7d9); color:white; box-shadow: 0 10px 24px rgba(255,136,194,0.18); padding:10px 18px; min-width:120px; font-weight:700; border:none}
@@ -59,10 +283,24 @@ body{
 .btn.secondary:active,
 .btn.secondary:focus{background: linear-gradient(90deg,var(--accent),#ffa7d9); color:white; box-shadow: 0 10px 24px rgba(255,136,194,0.18); transform:none; outline:none}
 
+/* Global hover / focus / active styles for all buttons to match the pastel UI */
+.btn:not(:disabled):hover,
+.btn:not(:disabled):focus{
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 16px 36px rgba(120,80,120,0.12);
+  filter: saturate(1.03) brightness(1.01);
+}
+.btn:active{ transform: translateY(-1px) scale(0.996); box-shadow: 0 8px 18px rgba(120,80,120,0.08); }
+.btn:focus{ outline: 3px solid rgba(255,136,194,0.12); outline-offset:3px }
+.btn[disabled], .btn:disabled{ opacity:0.55; cursor:not-allowed; pointer-events:none; box-shadow: none }
+
 /* Alternate secondary variants (pick one by adding the class) */
 .btn.secondary.slate{background: linear-gradient(90deg,#eef2ff,#f7f9fc); color:#1f2937}
 .btn.secondary.peach{background: linear-gradient(90deg,#fff3ea,#fff8f2); color:#6b3b2a}
 .form input{width:100%;padding:12px;margin:8px 0;border-radius:12px;border:1px solid rgba(0,0,0,0.06)}
+@media (max-width:560px){
+  .form input{ padding:14px; }
+}
 
 /* Form action buttons spacing */
 .form .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:8px}
@@ -148,6 +386,7 @@ body{
   .lobby .player-grid{ grid-template-columns: repeat(auto-fill, 80px); gap:12px; justify-content:center; overflow:visible; max-height:none }
   .lobby .player-tile{ width:80px; min-width:80px; height:80px; padding:6px }
   .lobby .player-tile .avatar{ width:38px; height:38px }
+  .lobby-actions{ position: sticky; bottom: 0; left: 0; right: 0; margin-top: 10px; padding-top: 10px; background: linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,0.85)); backdrop-filter: blur(6px); }
 }
 
 /* Exactly two players: force two columns side-by-side and center */
@@ -182,7 +421,7 @@ body.game-page .app-brand{ display:none !important }
 .card{ position:relative; z-index:1 }
 .game-flex{display:flex;gap:20px;flex-wrap:nowrap;flex:1;align-items:flex-start;overflow:visible}
 .dish-area{flex:1 1 0;min-width:280px;text-align:center}
-.dish-img{width:100%;max-width:360px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,0.06); border:2px solid rgba(17,24,39,0.08)}
+.dish-img{width:100%;max-width:640px;aspect-ratio:4/3;height:auto;object-fit:contain;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,0.06); border:2px solid rgba(17,24,39,0.08); background:#fff}
 .dish-placeholder{height:200px;display:flex;align-items:center;justify-content:center;background:linear-gradient(90deg,#fff,#fff3);border-radius:12px}
 .play-area{flex:1 1 0;min-width:320px;max-width:none}
 /* players container styled similar to chat */
@@ -200,7 +439,15 @@ body.game-page .app-brand{ display:none !important }
 
 /* Chat styles */
 .chat-box{ margin-top:12px; background: #fff; border-radius:12px; padding:10px; box-shadow:0 6px 18px rgba(0,0,0,0.03); border:1px solid rgba(17,24,39,0.08) }
+.chat-box .chat-head{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:6px }
+.chat-box.collapsed{ padding-bottom:8px }
+.chat-box.collapsed .chat-head{ margin-bottom:0 }
+.chat-box .chat-head h4{ margin:0; font-size:14px; line-height:1 }
+.icon-btn{ appearance:none; -webkit-appearance:none; background:transparent; color:#374151; border:none; border-radius:8px; padding:6px 8px; line-height:1; font-weight:700; cursor:pointer }
+.icon-btn:active{ transform: translateY(0) scale(0.98) }
+.icon-btn:focus{ outline:2px solid rgba(17,24,39,0.15); outline-offset:2px }
 .chat-messages{ max-height:240px; overflow:auto; display:flex; flex-direction:column; gap:8px; padding:6px }
+.players-box ul, .chat-messages, .lobby .player-grid.scroll{ -webkit-overflow-scrolling: touch; }
 .chat-message{ padding:8px 10px; border-radius:10px; background:#f8fafc; border:1px solid rgba(17,24,39,0.06) }
 .chat-message.me{ background: linear-gradient(90deg,#d1fae5,#86efac); align-self:flex-end }
 .chat-message.other{ background:#f3f4f6; align-self:flex-start }
@@ -258,12 +505,15 @@ body.game-page .app-brand{ display:none !important }
   .right-head{align-items:flex-start}
   .dish-area{min-width:0}
   .play-area{min-width:0}
-  .dish-img{max-width:100%; height:auto}
+  /* Constrain dish image height for comfortable mobile view */
+  .dish-img{max-width:100%; height:auto; aspect-ratio:auto; max-height:min(42svh, 360px); object-fit:contain; border-radius:12px}
   .guess-box{flex-direction:column}
   .guess-box .btn{width:100%}
   .chat-input-row{flex-direction:column}
   .chat-input-row .btn{width:100%}
-  .players-box ul{max-height:220px; overflow:auto}
+  /* Tuned scroll areas on mobile */
+  .players-box ul{max-height:32svh; overflow:auto}
+  .chat-messages{ max-height:28svh }
   .app-brand{transform:scale(0.9); top:12px; left:12px}
   /* Lobby mobile tweaks */
   .lobby .player-list{ max-height:260px; overflow:auto }
@@ -274,13 +524,17 @@ body.game-page .app-brand{ display:none !important }
 
 /* small phones */
 @media (max-width:420px){
-  .title{font-size:28px}
-  .btn{min-height:44px}
-  /* Keep Create and Join side-by-side on small phones */
-  .choices{ flex-wrap:nowrap; justify-content:space-between; gap:10px }
-  .choices .btn{ flex:1; min-width:0; padding:8px 12px }
+  .title{font-size:26px}
+  .btn{min-height:48px; font-size:16px; padding:12px 14px}
+  /* Stack Create / Join vertically on very small screens for easier tapping */
+  .choices{ flex-direction:column; gap:10px; justify-content:center; align-items:stretch }
+  .choices .btn{ width:100%; flex:none; min-width:0; padding:12px 14px }
+  /* Make the dashboard form flow vertically instead of forcing a square */
+  .page.dashboard .card.dashboard-form{ aspect-ratio: auto; width:92vw; max-width:420px; padding:12px; justify-content:flex-start }
   .card{padding:12px}
   .ingredient-chip{margin:4px 6px}
+  /* Slightly smaller dish image on very small phones */
+  .dish-img{ max-height:min(40svh, 300px) }
   .app-brand{display:none}
   /* lobby tighter spacing on very small screens */
   .lobby .card h2{ font-size:18px }

@@ -46,6 +46,7 @@ export default function Game() {
   const [messages, setMessages] = useState([]);
   const [chatInput, setChatInput] = useState("");
   const chatRef = useRef(null);
+  const [chatOpen, setChatOpen] = useState(false);
   const [isDisconnected, setIsDisconnected] = useState(false);
   const [hostPlayerId, setHostPlayerId] = useState(null);
   
@@ -251,6 +252,12 @@ export default function Game() {
         if (exists) return prev;
         return [...prev, msg];
       });
+      // Auto-open chat when a message arrives from another player
+      try {
+        if (msg && msg.playerId && msg.playerId !== playerId) {
+          setChatOpen((open) => open ? open : true);
+        }
+      } catch {}
     });
 
     // keep listener cleanup in same effect
@@ -594,12 +601,19 @@ export default function Game() {
             </div>
 
             {/* Chat */}
-            <div className="chat-box" style={{ display: 'flex', flexDirection: 'column', flex: 'none' }}>
-              <h4>Chat</h4>
-              <div className="chat-messages" ref={chatRef} style={{ maxHeight: 260, overflow: 'auto' }}>
+            <div className={`chat-box ${chatOpen ? '' : 'collapsed'}`} style={{ display: 'flex', flexDirection: 'column', flex: 'none' }}>
+              <div className="chat-head">
+                <h4>Chat</h4>
+                <button className="icon-btn" onClick={() => setChatOpen(o => !o)} aria-expanded={chatOpen} aria-controls="chat-panel" title={chatOpen ? 'Collapse chat' : 'Expand chat'}>
+                  {chatOpen ? '▴' : '▾'}
+                </button>
+              </div>
+              <div id="chat-panel" className="chat-messages" ref={chatRef} style={{ maxHeight: 260, overflow: 'auto', display: chatOpen ? 'flex' : 'none' }}>
                 {messages.map((m, i) => {
                   if (m.playerId === playerId) {
-                    const meStyle = { background: 'linear-gradient(90deg,#d1fae5,#86efac)', color: '#065f46', borderColor: '#a7f3d0' };
+                    // Respect dark minimal theme by not forcing a light inline style
+                    const isMinimal = typeof document !== 'undefined' && document.body.classList.contains('theme-minimal');
+                    const meStyle = isMinimal ? undefined : { background: 'linear-gradient(90deg,#d1fae5,#86efac)', color: '#065f46', borderColor: '#a7f3d0' };
                     return (
                       <div key={`${m.playerId || 'p'}-${m.ts}-${i}`} className="chat-message me" style={meStyle}>
                         <div className="chat-meta"><strong>You</strong> <small className="ts">{new Date(m.ts).toLocaleTimeString()}</small></div>
@@ -608,7 +622,8 @@ export default function Game() {
                     );
                   }
                   const color = colorForSender(m.playerId);
-                  const style = color ? { background: color.bg, color: color.text, borderColor: color.border } : undefined;
+                  const isMinimal = typeof document !== 'undefined' && document.body.classList.contains('theme-minimal');
+                  const style = isMinimal ? undefined : (color ? { background: color.bg, color: color.text, borderColor: color.border } : undefined);
                   return (
                     <div key={`${m.playerId || 'p'}-${m.ts}-${i}`} className="chat-message other" style={style}>
                       <div className="chat-meta"><strong>{m.name || 'Someone'}</strong> <small className="ts">{new Date(m.ts).toLocaleTimeString()}</small></div>
@@ -617,10 +632,12 @@ export default function Game() {
                   );
                 })}
               </div>
-              <div className="chat-input-row">
-                <input value={chatInput} onChange={e=>setChatInput(e.target.value)} placeholder="Say something..." onKeyDown={(e)=>{ if(e.key==='Enter') sendChat(); }} />
-                <button className="btn primary" onClick={sendChat} disabled={!chatInput.trim()}>Send</button>
-              </div>
+              {chatOpen && (
+                <div className="chat-input-row">
+                  <input value={chatInput} onChange={e=>setChatInput(e.target.value)} placeholder="Say something..." onKeyDown={(e)=>{ if(e.key==='Enter') sendChat(); }} />
+                  <button className="btn primary" onClick={sendChat} disabled={!chatInput.trim()}>Send</button>
+                </div>
+              )}
             </div>
 
             {/* Guess */}

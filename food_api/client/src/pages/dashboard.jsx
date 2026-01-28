@@ -1,5 +1,5 @@
 // src/pages/dashboard.jsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { socket } from "../socket.js";
 import "../styles/theme.css";
@@ -27,6 +27,19 @@ export default function Dashboard() {
   const [randomSeed] = useState(() => Math.random().toString(36).substring(2, 15));
   const generatedAvatar = getAvatarUrl(randomSeed, 64);
 
+  // Ensure socket is connected as soon as Dashboard mounts
+  useEffect(() => {
+    try { if (!socket.connected) socket.connect(); } catch {}
+  }, []);
+
+  // Helper: ensure socket connected before emitting
+  const emitWhenConnected = (fn) => {
+    if (socket.connected) return fn();
+    try { socket.connect(); } catch {}
+    const handler = () => { socket.off('connect', handler); fn(); };
+    socket.on('connect', handler);
+  };
+
   const handleCreateRoom = () => {
     if (!name) return alert("Enter your name");
     const generatedRoomId = Math.random().toString(36).substring(2, 8).toUpperCase();
@@ -35,12 +48,14 @@ export default function Dashboard() {
     sessionStorage.setItem("roomMeta", JSON.stringify({ isHost: true, roomId: generatedRoomId, rounds: totalRounds, timePerRound }));
     sessionStorage.setItem("playerAvatar", generatedAvatar);
 
-    socket.emit("createRoom", { roomId: generatedRoomId, name, totalRounds, playerId, timePerRound, avatar: generatedAvatar }, (res) => {
-      if (res.ok) {
-        navigate(`/lobby/${generatedRoomId}`, { state: { name, roomId: generatedRoomId, rounds: totalRounds, timePerRound, isHost: true } });
-      } else {
-        alert(res.message || "Failed to create");
-      }
+    emitWhenConnected(() => {
+      socket.emit("createRoom", { roomId: generatedRoomId, name, totalRounds, playerId, timePerRound, avatar: generatedAvatar }, (res) => {
+        if (res.ok) {
+          navigate(`/lobby/${generatedRoomId}`, { state: { name, roomId: generatedRoomId, rounds: totalRounds, timePerRound, isHost: true, avatar: generatedAvatar } });
+        } else {
+          alert(res.message || "Failed to create");
+        }
+      });
     });
   };
 
@@ -50,19 +65,24 @@ export default function Dashboard() {
     sessionStorage.setItem("roomMeta", JSON.stringify({ isHost: false, roomId, rounds: totalRounds, timePerRound }));
     sessionStorage.setItem("playerAvatar", generatedAvatar);
 
-    socket.emit("joinRoom", { roomId, name, playerId, avatar: generatedAvatar }, (res) => {
-      if (res.ok) {
-        navigate(`/lobby/${roomId}`, { state: { name, roomId, rounds: totalRounds, timePerRound, isHost: false } });
-      } else {
-        alert(res.message || "Failed to join");
-      }
+    emitWhenConnected(() => {
+      socket.emit("joinRoom", { roomId, name, playerId, avatar: generatedAvatar }, (res) => {
+        if (res.ok) {
+          navigate(`/lobby/${roomId}`, { state: { name, roomId, rounds: totalRounds, timePerRound, isHost: false, avatar: generatedAvatar } });
+        } else {
+          alert(res.message || "Failed to join");
+        }
+      });
     });
   };
 
   return (
     <div className="page dashboard">
       <div className={`card ${mode ? 'dashboard-form' : ''}`}>
-        <h1 className="title">🍲 Food War</h1>
+        <h1 className="title" style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:10 }}>
+          <span className="brand-name">🍜 Food War</span>
+          {/* <span aria-hidden></span> */}
+        </h1>
 
         {!mode ? (
           <div className="choices">
