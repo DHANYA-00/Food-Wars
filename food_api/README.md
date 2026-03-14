@@ -1,6 +1,6 @@
 # 🍲 Food War — Multiplayer Ingredient Guessing Game
 
-# Deployment Link: https://foodwars2vs2.netlify.app/
+# Deployment Link: https://foodwar1vs1.netlify.app/  
 
 Food War is a fun, real-time, multiplayer web game where players race against each other to guess the ingredients of various dishes. Designed for friends, families, and food enthusiasts, the game combines knowledge, speed, and strategy into an exciting culinary challenge.
 
@@ -71,6 +71,13 @@ Food War is a fun, real-time, multiplayer web game where players race against ea
 *Start the frontend:*
 - npm start
 
+
+> **Development note:**
+> - The client tries to connect to whatever `VITE_BACKEND_URL` is set to (see `client/src/socket.js`). For local dev it defaults to `http://localhost:5000`.
+>   - Local: create `client/.env` with `VITE_BACKEND_URL=http://localhost:5000` (or set `VITE_BACKEND_URL` in your process).
+>   - Production: set Netlify environment variable `VITE_BACKEND_URL` to your deployed backend URL (e.g. `https://your-backend.onrender.com`).
+> - If you deploy frontend and backend separately, make sure the backend has CORS/socket access for the frontend origin.
+> - If backend fails to start with `EADDRINUSE: address already in use`, kill the process using that port (`npx kill-port 5000` or `taskkill /F /PID <pid>`).
 ## 💡 Why Food War?
 
 Food War is not just a game—it’s a fun, interactive way to challenge your knowledge of ingredients, improve memory, and compete with friends in real-time. Perfect for food lovers, trivia enthusiasts, and casual gamers alike!
