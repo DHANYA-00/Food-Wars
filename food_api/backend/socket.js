@@ -26,10 +26,26 @@ function setupSocket(server) {
     console.log("🟢 Socket connected:", socket.id);
 
     // createRoom
-    socket.on("createRoom", ({ roomId, name, totalRounds, playerId, timePerRound, avatar }, callback) => {
+    socket.on("createRoom", (data = {}, callback) => {
+      // normalize & log incoming data so we can debug mismatches
+      const {
+        roomId: rawRoomId,
+        name,
+        totalRounds,
+        playerId,
+        timePerRound,
+        avatar
+      } = data;
+      console.log("📥 createRoom payload:", data);
+
+      // force room ids to a consistent uppercase trimmed string
+      const roomId = String(rawRoomId || "").trim().toUpperCase();
+
       try {
-        if (!roomId || !name || !playerId) return callback?.({ ok: false, message: "Missing roomId/name/playerId" });
-        if (rooms[roomId]) return callback?.({ ok: false, message: "Room already exists" });
+        if (!roomId || !name || !playerId)
+          return callback?.({ ok: false, message: "Missing roomId/name/playerId" });
+        if (rooms[roomId])
+          return callback?.({ ok: false, message: "Room already exists" });
 
         rooms[roomId] = {
           hostPlayerId: playerId,
@@ -61,9 +77,13 @@ function setupSocket(server) {
     });
 
     // joinRoom
-    socket.on("joinRoom", ({ roomId, name, playerId, avatar }, callback) => {
+    socket.on("joinRoom", (data = {}, callback) => {
+      const { roomId: rawRoomId, name, playerId, avatar } = data;
+      console.log("📥 joinRoom payload:", data);
+      const roomId = String(rawRoomId || "").trim().toUpperCase();
       try {
-        if (!roomId || !name || !playerId) return callback?.({ ok: false, message: "Missing roomId/name/playerId" });
+        if (!roomId || !name || !playerId)
+          return callback?.({ ok: false, message: "Missing roomId/name/playerId" });
         const room = rooms[roomId];
         if (!room) return callback?.({ ok: false, message: "Room not found" });
 

@@ -8,7 +8,10 @@ const connectDB = async () => {
     console.log("✅ MongoDB Connected");
   } catch (err) {
     console.error("❌ MongoDB Error:", err.message);
-    process.exit(1);
+    // do not kill the whole process – the web socket functionality does not strictly
+    // require MongoDB, and during development a missing URI should not block room
+    // creation/joining.
+    // process.exit(1);
   }
 };
 

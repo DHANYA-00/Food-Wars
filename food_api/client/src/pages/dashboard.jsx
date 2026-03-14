@@ -49,6 +49,7 @@ export default function Dashboard() {
     sessionStorage.setItem("playerAvatar", generatedAvatar);
 
     emitWhenConnected(() => {
+      console.log("🔗 emitting createRoom for", generatedRoomId);
       socket.emit("createRoom", { roomId: generatedRoomId, name, totalRounds, playerId, timePerRound, avatar: generatedAvatar }, (res) => {
         if (res.ok) {
           navigate(`/lobby/${generatedRoomId}`, { state: { name, roomId: generatedRoomId, rounds: totalRounds, timePerRound, isHost: true, avatar: generatedAvatar } });
@@ -61,14 +62,17 @@ export default function Dashboard() {
 
   const handleJoinRoom = () => {
     if (!name || !roomId) return alert("Enter name and room id");
+    // normalize the id to match server casing
+    const normalizedRoom = roomId.trim().toUpperCase();
     sessionStorage.setItem("playerName", name);
-    sessionStorage.setItem("roomMeta", JSON.stringify({ isHost: false, roomId, rounds: totalRounds, timePerRound }));
+    sessionStorage.setItem("roomMeta", JSON.stringify({ isHost: false, roomId: normalizedRoom, rounds: totalRounds, timePerRound }));
     sessionStorage.setItem("playerAvatar", generatedAvatar);
 
     emitWhenConnected(() => {
-      socket.emit("joinRoom", { roomId, name, playerId, avatar: generatedAvatar }, (res) => {
+      console.log("🔗 emitting joinRoom for", normalizedRoom);
+      socket.emit("joinRoom", { roomId: normalizedRoom, name, playerId, avatar: generatedAvatar }, (res) => {
         if (res.ok) {
-          navigate(`/lobby/${roomId}`, { state: { name, roomId, rounds: totalRounds, timePerRound, isHost: false, avatar: generatedAvatar } });
+          navigate(`/lobby/${normalizedRoom}`, { state: { name, roomId: normalizedRoom, rounds: totalRounds, timePerRound, isHost: false, avatar: generatedAvatar } });
         } else {
           alert(res.message || "Failed to join");
         }
