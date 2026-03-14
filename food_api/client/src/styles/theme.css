@@ -220,6 +220,8 @@ body.theme-minimal .guess-box input{
 }
 
 .page{display:flex;align-items:center;justify-content:center;padding:24px;min-height:100vh}
+.page.dashboard{min-height:100vh;align-items:center;justify-content:center; padding: 24px;}
+.page.dashboard .card{margin:0 auto;max-width:760px; width:min(95vw, 700px)}
 .card{
   width:100%;
   max-width:1100px;
