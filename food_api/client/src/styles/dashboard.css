@@ -18,3 +18,10 @@
 .form input { width:100%; padding:10px; }
 .form-actions { display:flex; gap:10px; }
 .form-actions button { padding:10px 14px; border-radius:8px; }
+@media (max-width: 720px) {
+  .dashboard-root { margin: 16px 8px; padding: 16px; border-radius: 12px; }
+  .mode-selection { flex-direction: column; }
+  .form { width: 100%; }
+  .form-actions { flex-direction: column; }
+  .form-actions button { width: 100%; }
+}

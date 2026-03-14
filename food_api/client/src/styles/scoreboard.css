@@ -12,3 +12,10 @@
 .score-card { background:#f8fafc; padding:12px; border-radius:10px; }
 .score-card.winner { background: linear-gradient(90deg,#fde68a,#fca5a5); }
 .back { margin-top:18px; padding:10px 14px; border-radius:8px; }
+
+@media (max-width: 760px) {
+  .scoreboard-root { margin: 16px 8px; padding: 14px; }
+  .score-grid { grid-template-columns: 1fr; }
+  .back { width: 100%; }
+}
+

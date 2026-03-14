@@ -12,6 +12,14 @@
 .players-section ul { list-style:none; padding:0; }
 .players-section li { padding:8px 0; border-bottom:1px solid #f0f0f0; }
 
-.lobby-actions { display:flex; gap:12px; align-items:center; margin-top:12px; }
+.lobby-actions { display:flex; gap:12px; align-items:center; margin-top:12px; flex-wrap: wrap; }
 .start-btn { background: #ef4444; color:white; padding:10px 14px; border-radius:8px; border:none; }
 .leave-btn { padding:10px 12px; }
+
+@media (max-width: 700px) {
+  .lobby-root { margin: 16px 8px; padding: 14px; }
+  .players-section { margin: 8px 0; }
+  .lobby-actions { flex-direction: column; width: 100%; }
+  .lobby-actions button { width: 100%; }
+}
+

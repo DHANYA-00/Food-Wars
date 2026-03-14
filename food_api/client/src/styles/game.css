@@ -196,4 +196,16 @@
   .actions{ flex-direction:column }
   .actions .btn{ min-width:100%; min-height:44px }
   .players-list ul{ max-height: 200px; overflow:auto }
+  .game-root { margin: 12px; padding: 14px; border-radius: 14px; }
+  .game-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .game-flex { flex-direction: column; }
+  .dish-img, .dish-placeholder { max-width: 100%; }
 }
+
+@media (max-width: 900px) {
+  .game-body { flex-direction: column; }
+  .dish-panel, .play-panel { width: 100%; }
+  .guess-box { flex-direction: column; }
+  .guess-box button{ width:100%; }
+}
+
